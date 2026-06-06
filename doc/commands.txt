@@ -1,0 +1,10 @@
+$r = Invoke-RestMethod -Uri "https://api.twelvedata.com/time_series?symbol=RY&interval=1day&outputsize=5&apikey=demo"; if ($r.values) { $r.values | Format-Table datetime, open, high, low, close, volume } else { $r.message }
+
+$r = Invoke-RestMethod -Uri "https://api.twelvedata.com/time_series?symbol=EUR/USD&interval=1day&start_date=2016-01-01&end_date=2026-06-01&apikey=demo"; if ($r.values) { $r.values | Format-Table datetime, open, high, low, close; Write-Host "Total Rows: $($r.values.Count)" -ForegroundColor Green } else { $r.message }
+
+$r = Invoke-RestMethod -Uri "https://api.twelvedata.com/time_series?symbol=EUR/USD&interval=1day&outputsize=30&apikey=demo"; if ($r.values) { $r.values | Format-Table datetime, open, high, low, close } else { $r.message }
+
+$r = Invoke-RestMethod -Uri "https://api.twelvedata.com/time_series?symbol=EUR/USD&interval=1day&outputsize=5&apikey=demo"; if ($r.values) { $r.values | Format-Table datetime, open, high, low, close } else { $r.message }
+
+"AAPL","SPY","QQQ" | ForEach-Object { $r = Invoke-RestMethod -Uri "https://api.twelvedata.com/price?symbol=$_&apikey=demo"; if ($r.price) { "$_`: `$($r.price)" } }
+AAPL: $(@{price=311.16000}.price)

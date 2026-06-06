@@ -1,0 +1,65 @@
+Frontend: 
+    React/JS or C++ ImGui talking via WebSockets/HTTP.
+    Single Page Applications (SPA) combined with an In-Memory Frontend State
+
+    Instead of the frontend requesting data on demand every time a user clicks a menu, 
+    the C++ backend constantly streams a unified state update package through a WebSocket.
+    The frontend catches this package and saves it in its own local memory (called the "Frontend State"). 
+    When the user clicks different menus, the frontend doesn't talk to the backend at all.
+    It just changes what it's looking at inside its own local memory!
+
+Communication:
+    The frontend sends requests to the backend, only when the backend needs to change the internal state.
+    The backend sends requests to the frontend, only when the internal state is changed.
+
+Data Storage: Local CSV that can automatically re-download itself if deleted.
+Portfolio State: Saved locally on disk via a lightweight JSON file or SQLite database.
+
+The $0 Cloud Hack (Optional for the future)
+If you eventually want cloud syncing so a user can log in from anywhere, you still don't have to pay a dime.
+
+You can write your backend storage layer to optionally integrate with free-tier cloud databases like Supabase or Firebase.
+
+Threads:
+
+    Thread 1: The Network/Data Ingestion Thread (The Collector)
+    What it does: This thread sits in a tight loop talking strictly to the internet. It maintains the WebSocket connection to the external broker API (e.g., Trading 212 API, Binance, etc.).
+
+    Its Lifecycle: It wakes up only when a new price packet arrives from the internet, parses the raw bytes into our native Bar struct, copies it into a shared memory slot, and immediately goes back to listening.
+
+    Thread 2: The Gateway/API Thread (The Communicator)
+    What it does: This thread manages the communication with your Frontend Process. It runs a lightweight HTTP/WebSocket server listening on localhost:8080.
+
+    Its Lifecycle: * When the user clicks a button in the UI, this thread catches the incoming command (like a "BUY" request) and passes it safely over to the Main Engine.
+
+    When the Main Engine wants to broadcast a state update (like a changing balance), this thread is the one that actually formats the JSON and pushes it out to the browser/UI.
+
+    Thread 3: The Main Engine Thread (The Brain & Execution Loop)
+    What it does: This is the sacred ground of your application. It runs your core business logic: the virtual Broker simulator, account balance math, and the Auto-Invest engine.
+
+    Its Lifecycle: It is an event-driven loop. It wakes up when one of two things happens:
+
+    The Network Thread says: "Hey, a new price bar just arrived."
+
+    The Gateway Thread says: "Hey, the user just clicked BUY."
+
+    Once awoken, it updates the portfolio, executes any scheduled auto-investments based on the new time, and triggers the Gateway Thread to send the new balance back to the UI.
+
+
+The Synchronization Strategy (How they talk without breaking)
+    Because Thread 1 (Internet) and Thread 2 (User Clicks) are both feeding data into Thread 3 (The Engine), we have to prevent them from stepping on each other's toes (race conditions).
+
+    Instead of locking up the whole engine with heavy, slow mutexes, we use a Thread-Safe Lock-Free Queue or simple atomic variables.
+
+    The Ingestion Thread drops a new price into a queue.
+
+    The Gateway Thread drops a user order into the same queue.
+
+    The Main Engine Thread calmly sits at the end of that queue, pulling items out one by one, processing them sequentially.
+
+    Because the Main Engine executes everything sequentially from that queue, your portfolio logic remains completely single-threaded and ultra-fast. It never has to worry about data corruption, and it doesn't suffer from multi-threaded locking overhead.
+
+What about Backtesting Mode?
+    When the user switches the app from "Live Mode" to "Backtesting Mode", Threads 1 and 2 completely go to sleep. Because backtesting doesn't wait for the internet or live user clicks, the Main Engine Thread takes over 100% of the execution. It reads the CSV straight from the disk as fast as possible in a single, uninterrupted loop.
+
+    Does this three-thread blueprint inside the single backend process make complete sense, or would you like to dig deeper into how the Auto-Invest logic handles time slices across these threads?
