@@ -1,72 +1,22 @@
-+-------------------+
-                     |    PriceCandle    |  <--- Plain Data Structure (POD)
-                     +-------------------+
-                               |
-                               v
-                     +-------------------+
-                     |   IDataProvider   |  <--- Pure Abstract Interface
-                     +-------------------+
-                               |
-        +----------------------+----------------------+
-        |                      |                      |
-        v                      v                      v
-+---------------+      +---------------+      +---------------+
-|TwelveDataProv |      |  AlpacaProv   |      | LocalDiskProv |  <--- Concrete Adapters
-+---------------+      +---------------+      +---------------+
-        |                      |                      |
-        +----------------------+----------------------+
-                               |
-                               v
-                     +-------------------+
-                     |    DataBroker     |  <--- Fallover Orchestrator
-                     +-------------------+
 
++-------------------+
+                     |    PriceCandle    |
+                     +-------------------+
+                               |
+                               v
+                     +-----------------------------------+
+                     |            DataBroker             |
+                     +-----------------------------------+
+                       /                               \
+        Holds a vector/                                 \ Holds a direct reference
+      of web fetchers/                                   \ to the smart cache contract
+                    v                                     v
+          +------------------+                   +------------------+
+          |  IDataProvider   |                   |    ILocalCache   | <--- The Storage Contract
+          +------------------+                   +------------------+
+            /              \                               |
+           v                v                              v
+    +--------------+  +------------+             +------------------+
+    |TwelveDataProv|  | AlpacaProv |             |  CSVLocalCache  | <--- The CSV Writer/Reader
 
                      1. The Core Data Layout (Plain Old Data)
-PriceCandle (Struct)
-Responsibility: A lightweight, pure memory representation of a single unit of market time (a data row). It holds zero logic, only variables.
-
-Key Fields: Timestamp/Date (string or integer), Open (double), High (double), Low (double), Close (double), Volume (long).
-
-2. The Abstract Contract (The Interface)
-IDataProvider (Interface Class)
-Responsibility: Defines the universal language for any data source. It acts as a strict boundary line; the rest of your app only speaks to this interface, never the networks underneath.
-
-Key Pure Virtual Function: TryGetHistory(symbol, interval, out_vector) -> returns a boolean (True if successful, False if it failed/timed out).
-
-3. The Concrete Source Modules (The Workers)
-These classes inherit directly from IDataProvider. Each one isolates unique external rules, networking packages, or file schemas completely inside its own walls.
-
-TwelveDataProvider (Class)
-Responsibility: Manages the active web connection to your Twelve Data account.
-
-Internal State: Your private API key string, base URL endpoint, and current credit counter.
-
-Specialization: Uses httplib to hit the internet, reads JSON formatting, and handles pagination chunks if you request more than 5,000 rows.
-
-AlpacaDataProvider (Class)
-Responsibility: Your automated live network backup.
-
-Specialization: Formats requests to match Alpaca's API structure instead of Twelve Data's.
-
-LocalDiskDataProvider (Class)
-Responsibility: Your ultimate safety net and local simulator.
-
-Specialization: Bypasses the internet entirely. It uses <filesystem> to open your local machine's hard drive, opens data_AAPL.csv, reads the text rows sequentially, and loads them into memory.
-
-4. The Orchestrator (The Boss)
-DataBroker (Class)
-Responsibility: Manages the collection of data providers and automatically handles errors, internet drops, and rate limits.
-
-Internal State: A prioritized array/list (std::vector) of IDataProvider pointers.
-
-Key Process Workflow: 1. The main application requests historical data for a symbol.
-2. The Broker starts a loop through its list of providers.
-3. It calls TryGetHistory() on the first provider (Twelve Data).
-4. If it returns false (API dead or out of credits), it catches that result, logs a silent warning, and immediately moves to the next provider in the list.
-5. If a network provider succeeds, the Broker automatically passes that fresh data to a utility method that overwrites or updates your local CSV file before returning the data to the engine.
-
-Why this design is incredibly robust:
-If you want to add a third internet backup next year (like Yahoo Finance), you do not have to touch your core system or rewrite the DataBroker. You simply create a new YahooProvider class, make it inherit from IDataProvider, and drop it into the Broker's vector.
-
-Everything else in your application keeps running flawlessly without realizing anything changed!
