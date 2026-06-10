@@ -1,6 +1,8 @@
 #include "data/DataBroker.hpp"
 #include "Logging.hpp"
 
+#include <algorithm>
+
 namespace trading {
 
 DataBroker::DataBroker(std::vector<std::unique_ptr<IDataProvider>> providers,
@@ -9,36 +11,60 @@ DataBroker::DataBroker(std::vector<std::unique_ptr<IDataProvider>> providers,
 
 std::optional<std::vector<PriceCandle>>
 DataBroker::getHistory(std::string_view symbol, std::string_view interval) {
-  for (auto &provider : m_providers) {
-    std::vector<PriceCandle> candles;
-
-    LOG(Debug) << "Trying provider for " << symbol << "/" << interval;
-
-    if (provider->tryGetHistory(symbol, interval, candles)) {
-      LOG(Info) << "Fetched " << candles.size() << " candles for " << symbol
-                << "/" << interval;
-      if (provider->isRemoteSource()) {
-        persistToCache(symbol, interval, candles);
-      }
-      return candles;
+    // 1. Cache-first: serve from disk before touching any network provider.
+    if (m_cache) {
+        std::vector<PriceCandle> cached;
+        if (m_cache->tryLoad(symbol, interval, cached)) {
+            LOG(Info) << "Cache hit for " << symbol << "/" << interval
+                      << " (" << cached.size() << " candles)";
+            return cached;
+        }
+        LOG(Debug) << "Cache miss for " << symbol << "/" << interval;
     }
 
-    LOG(Warning) << "Provider failed for " << symbol << "/" << interval
-                 << ", trying next...";
-  }
+    // 2. Cooperative fetch: every provider contributes what it has.
+    //    All providers are tried; results are merged, sorted by timestamp,
+    //    and deduplicated before being persisted and returned.
+    std::vector<PriceCandle> all;
 
-  LOG(Error) << "All providers exhausted for " << symbol << "/" << interval;
-  return std::nullopt;
+    for (auto& provider : m_providers) {
+        std::vector<PriceCandle> candles;
+        LOG(Debug) << "Trying provider for " << symbol << "/" << interval;
+
+        if (provider->tryGetHistory(symbol, interval, candles)) {
+            LOG(Info) << "Provider contributed " << candles.size() << " candles for "
+                      << symbol << "/" << interval;
+            all.insert(all.end(),
+                       std::make_move_iterator(candles.begin()),
+                       std::make_move_iterator(candles.end()));
+        } else {
+            LOG(Warning) << "Provider failed for " << symbol << "/" << interval;
+        }
+    }
+
+    if (all.empty()) {
+        LOG(Error) << "All providers exhausted for " << symbol << "/" << interval;
+        return std::nullopt;
+    }
+
+    std::ranges::sort(all, {}, &PriceCandle::timestamp);
+    auto tail = std::ranges::unique(all, {}, &PriceCandle::timestamp);
+    all.erase(tail.begin(), tail.end());
+
+    LOG(Info) << "Assembled " << all.size() << " candles for " << symbol
+              << "/" << interval;
+    persistToCache(symbol, interval, all);
+    return all;
 }
 
 void DataBroker::persistToCache(std::string_view symbol,
                                 std::string_view interval,
-                                const std::vector<PriceCandle> &candles) {
-  if (!m_cache)
-    return;
-  if (!m_cache->trySave(symbol, interval, candles)) {
-    LOG(Warning) << "Cache write failed for " << symbol << "/" << interval;
-  }
+                                const std::vector<PriceCandle>& candles) {
+    if (!m_cache)
+        return;
+    if (!m_cache->trySave(symbol, interval, candles)) {
+        LOG(Warning) << "Cache write failed for " << symbol << "/" << interval;
+    }
 }
 
 } // namespace trading

@@ -8,3 +8,5 @@ $r = Invoke-RestMethod -Uri "https://api.twelvedata.com/time_series?symbol=EUR/U
 
 "AAPL","SPY","QQQ" | ForEach-Object { $r = Invoke-RestMethod -Uri "https://api.twelvedata.com/price?symbol=$_&apikey=demo"; if ($r.price) { "$_`: `$($r.price)" } }
 AAPL: $(@{price=311.16000}.price)
+
+Api key: 09bc29fdccc54c0ca12c5c7353d3cb1f

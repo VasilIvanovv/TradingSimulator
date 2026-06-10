@@ -1,0 +1,41 @@
++------------------------+
+                           |    IBrokerExecution    | <--- Pure Abstract Interface
+                           +------------------------+
+                           | + ~IBrokerExecution()  |
+                           | + ExecuteOrder(ticket) | = 0 (Returns ExecutionReceipt)
+                           | + GetAvailableCash()   | = 0 (Returns double)
+                           +------------------------+
+                                       ^
+                                       | Inherits / Implements
+                    +------------------+------------------+
+                    |                                     |
+         +--------------------+                +----------------------+
+         |    PaperAccount    |                |  LiveAlpacaExecution | <--- Future Extension
+         +--------------------+                +----------------------+
+         | - m_cash: double   |                | - m_apiKey: string   |
+         | - m_positions: map |                | - m_secret: string   |
+         |   <string, double> |                +----------------------+
+         +--------------------+                | + ExecuteOrder()     | (Performs network HTTPS
+         | + ExecuteOrder()   | (Updates local | + GetAvailableCash() |  REST serialization)
+         | + GetAvailableCash()|  memory maps) +----------------------+
+         +--------------------+
+
+         [Main Controller]            [PaperAccount]             [m_positions Map]
+        |                           |                            |
+        |--- ExecuteOrder(ticket) ->|                            |
+        |    (Symbol: "AAPL")       |                            |
+        |                           |-- 1. Check Cash Balance    |
+        |                           |   (Cash >= Total Cost?)    |
+        |                           |                            |
+        |                           |-- 2. Deduct Cash Balance   |
+        |                           |                            |
+        |                           |--- 3. Update Inventory --->| (Increments AAPL share 
+        |                           |                            |  count in memory hash)
+        |                           |                            |
+        |                           |-- 4. Generate Receipt      |
+        |<-- Returns Receipt -------|   (Status: FILLED)         |
+        |    (With execution price) |                            |
+
+
+
+        For now we don't need the LiveAlpacaExecution, because we are only working with virtual stocks

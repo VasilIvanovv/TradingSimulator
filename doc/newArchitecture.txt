@@ -1,0 +1,57 @@
+================================= BACKEND PROCESS BOUNDARY =================================
+                                                                             
+             +-------------------------------------------------+             
+             |                Main Controller                  |  <--- Entry Point & IPC Gate
+             +-------------------------------------------------+             
+               /                        |                      \             
+              / (Background Thread)     |                       \ (Synchronous)
+             v                          v                        v           
+    +-----------------+        +-----------------+        +-----------------+
+    | Ingestion Layer |        | Tracking Layer  |        | Execution Layer |
+    +-----------------+        +-----------------+        +-----------------+
+    | - DataBroker    |        | - LimitTracker  |        | - PaperAccount  |
+    | - IDataProvider |        | - RuleRegistry  |        | - LiveBrokerAPI |
+    | - ILocalCache   |        +-----------------+        +-----------------+
+    +-----------------+                 |                          |         
+         /         \                    v                          v         
+        v           v          [Evaluates Prices]         [Commits Orders]   
+   [Web APIs]    [Disk Storage]                                              
+                  (.csv files)                                               
+============================================================================================
+
+
+
+
+
+
+
+Plaintext
++---------------------------------------+
+|             TrackingLayer             |
++---------------------------------------+
+| - m_ruleRegistry: unordered_map       | <--- Key: std::string (Symbol)
+|                   <string, unique_ptr |      Value: std::unique_ptr<IDecisionEngine>
+|                    <IDecisionEngine>> |
++---------------------------------------+
+| + RegisterRule(sym, unique_ptr)       |
+| + EvaluateUpdate(sym, history, ticket)| ----+ Emits a TradeTicket
++---------------------------------------+     | if a strategy triggers
+                                              v
+                                   +---------------------+
+                                   |   IDecisionEngine   | <--- Pure Abstract Interface
+                                   +---------------------+
+                                   | + ~IDecisionEngine()|
+                                   | + Evaluate(history) | = 0 (Returns OrderSide)
+                                   +---------------------+
+                                              ^
+                                              | Inherits / Implements
+                                     +--------+--------+
+                                     |                 |
+                        +--------------------+  +--------------------+
+                        |  UserLimitTracker  |  | AlgorithmicTracker | <--- Future Extension
+                        +--------------------+  +--------------------+
+                        | - m_triggerPrice   |  | - m_shortSmaPeriod |      (Identical signature)
+                        | - m_targetSide     |  | - m_longSmaPeriod  |
+                        +--------------------+  +--------------------+
+                        | + Evaluate()       |  | + Evaluate()       |
+                        +--------------------+  +--------------------+

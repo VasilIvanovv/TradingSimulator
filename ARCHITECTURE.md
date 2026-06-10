@@ -38,7 +38,7 @@ This layer should be plain data and small utilities only.
 
 ---
 
-### 2) Data ingestion layer
+### 2) Data ingestion layer - Data broker, etc...
 Responsible for loading historical market data.
 
 Contains:

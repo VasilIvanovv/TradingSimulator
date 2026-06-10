@@ -11,6 +11,21 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(TRADING_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
+# --- Dependencies ---
+include(FetchContent)
+
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG        v3.11.3
+    GIT_SHALLOW    TRUE
+)
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+set(JSON_Install    OFF CACHE INTERNAL "")
+FetchContent_MakeAvailable(nlohmann_json)
+
+# --- Libraries ---
+
 # Header-only interfaces and POD types
 add_library(trading_core INTERFACE)
 target_include_directories(trading_core INTERFACE ${PROJECT_SOURCE_DIR}/include)
@@ -24,7 +39,11 @@ add_library(trading_data STATIC
     src/data/AlpacaProvider.cpp
     src/data/CsvLocalCache.cpp
 )
-target_link_libraries(trading_data PUBLIC trading_core)
+target_link_libraries(trading_data PUBLIC trading_core nlohmann_json::nlohmann_json)
+
+if(WIN32)
+    target_link_libraries(trading_data PUBLIC winhttp)
+endif()
 
 add_executable(trading_simulator src/main.cpp)
 target_link_libraries(trading_simulator PRIVATE trading_data)
