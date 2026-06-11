@@ -1,10 +1,9 @@
 #include "data/TwelveDataProvider.hpp"
 #include "Logging.hpp"
 
+#include <curl/curl.h>
 #include <format>
 #include <nlohmann/json.hpp>
-#include <windows.h>
-#include <winhttp.h>
 
 namespace trading {
 
@@ -13,60 +12,41 @@ namespace trading {
 // ---------------------------------------------------------------------------
 namespace {
 
-struct WinHttpHandle {
-    HINTERNET h{nullptr};
-    ~WinHttpHandle() { if (h) WinHttpCloseHandle(h); }
-    explicit operator bool() const noexcept { return h != nullptr; }
-    operator HINTERNET()    const noexcept { return h; }
+// Initialises libcurl once for the lifetime of the process.
+struct CurlGlobal {
+    CurlGlobal()  { curl_global_init(CURL_GLOBAL_DEFAULT); }
+    ~CurlGlobal() { curl_global_cleanup(); }
 };
 
+struct CurlHandle {
+    CURL* h{curl_easy_init()};
+    ~CurlHandle() { if (h) curl_easy_cleanup(h); }
+    explicit operator bool() const noexcept { return h != nullptr; }
+    operator CURL*()         const noexcept { return h; }
+};
+
+size_t appendToString(char* ptr, size_t /*size*/, size_t nmemb, void* userdata) {
+    static_cast<std::string*>(userdata)->append(ptr, nmemb);
+    return nmemb;
+}
+
 // Performs an HTTPS GET and returns the full response body.
-// Returns an empty string on any network or Windows error.
+// Returns an empty string on any network or curl error.
 std::string httpsGet(std::string_view host, std::string_view path) {
-    auto toWide = [](std::string_view s) {
-        return std::wstring(s.begin(), s.end());
-    };
+    static const CurlGlobal curlGlobal;  // initialised on first call, cleaned up at exit
 
-    WinHttpHandle session{WinHttpOpen(
-        L"TradingSimulator/1.0",
-        WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
-        WINHTTP_NO_PROXY_NAME,
-        WINHTTP_NO_PROXY_BYPASS,
-        0
-    )};
-    if (!session) return {};
-
-    WinHttpHandle connection{WinHttpConnect(
-        session, toWide(host).c_str(), INTERNET_DEFAULT_HTTPS_PORT, 0
-    )};
-    if (!connection) return {};
-
-    WinHttpHandle request{WinHttpOpenRequest(
-        connection,
-        L"GET",
-        toWide(path).c_str(),
-        nullptr,
-        WINHTTP_NO_REFERER,
-        WINHTTP_DEFAULT_ACCEPT_TYPES,
-        WINHTTP_FLAG_SECURE
-    )};
-    if (!request) return {};
-
-    if (!WinHttpSendRequest(request,
-                            WINHTTP_NO_ADDITIONAL_HEADERS, 0,
-                            WINHTTP_NO_REQUEST_DATA, 0, 0, 0))
-        return {};
-
-    if (!WinHttpReceiveResponse(request, nullptr)) return {};
-
+    const std::string url = std::format("https://{}{}", host, path);
     std::string body;
-    DWORD available = 0;
-    while (WinHttpQueryDataAvailable(request, &available) && available > 0) {
-        std::string chunk(available, '\0');
-        DWORD bytesRead = 0;
-        WinHttpReadData(request, chunk.data(), available, &bytesRead);
-        body.append(chunk.data(), bytesRead);
-    }
+
+    CurlHandle curl;
+    if (!curl) return {};
+
+    curl_easy_setopt(curl, CURLOPT_URL,           url.c_str());
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, appendToString);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA,     &body);
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+
+    if (curl_easy_perform(curl) != CURLE_OK) return {};
     return body;
 }
 
@@ -77,18 +57,15 @@ std::string httpsGet(std::string_view host, std::string_view path) {
 // ---------------------------------------------------------------------------
 
 TwelveDataProvider::TwelveDataProvider(std::string apiKey)
-    : m_apiKey(std::move(apiKey))
-{}
+    : m_apiKey(std::move(apiKey)) {}
 
-bool TwelveDataProvider::tryGetHistory(
-    std::string_view symbol,
-    std::string_view interval,
-    std::vector<PriceCandle>& outCandles
-) {
+bool TwelveDataProvider::tryGetHistory(std::string_view symbol,
+                                       std::string_view interval,
+                                       std::string_view startDate,
+                                       std::vector<PriceCandle>& outCandles) {
     const std::string path = std::format(
-        "/time_series?symbol={}&interval={}&outputsize=5000&apikey={}",
-        symbol, interval, m_apiKey
-    );
+        "/time_series?symbol={}&interval={}&start_date={}&outputsize=5000&apikey={}",
+        symbol, interval, startDate, m_apiKey);
 
     LOG(Debug) << "TwelveData GET api.twelvedata.com" << path;
 
@@ -124,8 +101,8 @@ bool TwelveDataProvider::tryGetHistory(
         }
 
         ++m_creditsUsed;
-        LOG(Info) << "TwelveData: " << outCandles.size()
-                  << " candles for " << symbol << "/" << interval
+        LOG(Info) << "TwelveData: " << outCandles.size() << " candles for "
+                  << symbol << "/" << interval
                   << " (credits used: " << m_creditsUsed << ")";
         return !outCandles.empty();
 

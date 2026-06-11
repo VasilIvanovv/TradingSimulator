@@ -24,6 +24,16 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 set(JSON_Install    OFF CACHE INTERNAL "")
 FetchContent_MakeAvailable(nlohmann_json)
 
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        v1.14.0
+    GIT_SHALLOW    TRUE
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set(INSTALL_GTEST OFF CACHE INTERNAL "")
+FetchContent_MakeAvailable(googletest)
+
 # --- Libraries ---
 
 # Header-only interfaces and POD types
@@ -48,7 +58,21 @@ endif()
 add_executable(trading_simulator src/main.cpp)
 target_link_libraries(trading_simulator PRIVATE trading_data)
 
-set(_trading_targets trading_data trading_simulator)
+# --- Tests ---
+enable_testing()
+
+add_executable(trading_tests
+    tests/DataBrokerTest.cpp
+)
+target_link_libraries(trading_tests PRIVATE
+    trading_data
+    GTest::gtest_main
+    GTest::gmock
+)
+include(GoogleTest)
+gtest_discover_tests(trading_tests)
+
+set(_trading_targets trading_data trading_simulator trading_tests)
 
 foreach(_target IN LISTS _trading_targets)
     if(MSVC)

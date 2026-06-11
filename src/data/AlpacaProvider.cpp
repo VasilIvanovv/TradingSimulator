@@ -7,9 +7,9 @@ AlpacaProvider::AlpacaProvider(std::string apiKey, std::string apiSecret)
 
 bool AlpacaProvider::tryGetHistory(std::string_view /*symbol*/,
                                    std::string_view /*interval*/,
-                                   std::vector<PriceCandle> & /*outCandles*/
-) {
-  return false;
+                                   std::string_view /*startDate*/,
+                                   std::vector<PriceCandle>& /*outCandles*/) {
+    return false;
 }
 
 } // namespace trading

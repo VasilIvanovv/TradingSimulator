@@ -18,6 +18,7 @@ bool CsvLocalCache::trySave(
 bool CsvLocalCache::tryLoad(
     std::string_view /*symbol*/,
     std::string_view /*interval*/,
+    std::string_view /*startDate*/,
     std::vector<PriceCandle>& /*outCandles*/
 ) {
     return false;

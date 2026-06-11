@@ -7,11 +7,13 @@ namespace trading {
 
 class TwelveDataProvider final : public IDataProvider {
 public:
+    /** @param apiKey Twelve Data API key used to authenticate REST requests. */
     explicit TwelveDataProvider(std::string apiKey);
 
     [[nodiscard]] bool tryGetHistory(
         std::string_view symbol,
         std::string_view interval,
+        std::string_view startDate,
         std::vector<PriceCandle>& outCandles
     ) override;
 
