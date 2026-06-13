@@ -11,28 +11,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(TRADING_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
-# --- Dependencies ---
-include(FetchContent)
-
-FetchContent_Declare(
-    nlohmann_json
-    GIT_REPOSITORY https://github.com/nlohmann/json.git
-    GIT_TAG        v3.11.3
-    GIT_SHALLOW    TRUE
-)
-set(JSON_BuildTests OFF CACHE INTERNAL "")
-set(JSON_Install    OFF CACHE INTERNAL "")
-FetchContent_MakeAvailable(nlohmann_json)
-
-FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG        v1.14.0
-    GIT_SHALLOW    TRUE
-)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-set(INSTALL_GTEST OFF CACHE INTERNAL "")
-FetchContent_MakeAvailable(googletest)
+# --- Dependencies (managed by vcpkg) ---
+find_package(CURL          REQUIRED)
+find_package(nlohmann_json REQUIRED)
+find_package(GTest         REQUIRED)
 
 # --- Libraries ---
 
@@ -49,11 +31,11 @@ add_library(trading_data STATIC
     src/data/AlpacaProvider.cpp
     src/data/CsvLocalCache.cpp
 )
-target_link_libraries(trading_data PUBLIC trading_core nlohmann_json::nlohmann_json)
-
-if(WIN32)
-    target_link_libraries(trading_data PUBLIC winhttp)
-endif()
+target_link_libraries(trading_data PUBLIC
+    trading_core
+    nlohmann_json::nlohmann_json
+    CURL::libcurl
+)
 
 add_executable(trading_simulator src/main.cpp)
 target_link_libraries(trading_simulator PRIVATE trading_data)
@@ -72,6 +54,7 @@ target_link_libraries(trading_tests PRIVATE
 include(GoogleTest)
 gtest_discover_tests(trading_tests)
 
+# --- Warnings ---
 set(_trading_targets trading_data trading_simulator trading_tests)
 
 foreach(_target IN LISTS _trading_targets)

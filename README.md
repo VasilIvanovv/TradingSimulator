@@ -1,12 +1,27 @@
+### Prerequisites
+
+- [Visual Studio 2022](https://visualstudio.microsoft.com/) with the **Desktop development with C++** workload
+- [vcpkg](doc/Setup/vcpkg_setup.md) installed and `VCPKG_ROOT` set
+
 ### Build
 
-```powershell
-# From x64 Native Tools Command Prompt
-cd c:\Users\vasil\Documents\projects\TradingSimulator
-mkdir build
-cd build
-cmake ..
-cmake --build .
-```
+> Run all commands below from the **x64 Native Tools Command Prompt for VS 2022** (or any terminal where the MSVC toolchain is on the PATH), from the **project root** (`TradingSimulator\`).
 
-cmake -G "Visual Studio 17 2022" -A x64 .. (if needed)
+**Configure** (one-liner):
+cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -S . -B build
+
+On first run vcpkg will automatically download and build all dependencies (curl, nlohmann-json, gtest). This takes a few minutes once.
+
+**Compile:**
+cmake --build build --config Debug
+
+**Run:**
+.\build\Debug\trading_simulator.exe
+
+**Run tests:**
+ctest --test-dir build -C Debug -V
+
+### Reconfigure from scratch
+
+Remove-Item -Recurse -Force build
+cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -S . -B build
