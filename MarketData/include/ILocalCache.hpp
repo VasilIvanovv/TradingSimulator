@@ -26,16 +26,19 @@ public:
     ILocalCache& operator=(ILocalCache&&)      = default;
 
     /**
-     * @brief Persist @p candles for the given @p symbol / @p interval pair.
+     * @brief Merge @p candles into the cached data for @p symbol / @p interval.
      *
-     * Implementations should overwrite any previously cached data for the
-     * same key so that the stored dataset always reflects the latest
-     * fully-assembled result from the broker.
+     * Implementations must merge with any previously cached data for the
+     * same key rather than discarding it — the broker only passes the
+     * candles it just fetched (which may cover a narrower range than what
+     * is already cached), so a naive overwrite would lose history outside
+     * that range. For timestamps present in both the existing cache and
+     * @p candles, the new value wins.
      *
      * @param symbol   Ticker symbol, e.g. @c "AAPL".
      * @param interval Candle width, e.g. @c "1day".
-     * @param candles  Candles to store; sorted ascending by timestamp.
-     * @return @c true if all candles were written successfully.
+     * @param candles  Candles to merge in; sorted ascending by timestamp.
+     * @return @c true if the merged dataset was written successfully.
      */
     [[nodiscard]] virtual bool trySave(
         std::string_view symbol,

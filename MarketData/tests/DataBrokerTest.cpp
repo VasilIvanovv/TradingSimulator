@@ -1,9 +1,9 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "data/DataBroker.hpp"
-#include "data/IDataProvider.hpp"
-#include "data/ILocalCache.hpp"
+#include "DataBroker.hpp"
+#include "IDataProvider.hpp"
+#include "ILocalCache.hpp"
 
 using namespace trading;
 using namespace testing;
@@ -437,4 +437,3 @@ TEST_F(DataBrokerTest, ProviderReturnsTrueButAddsNoCandles_ReturnsNullopt_NoSave
 
     EXPECT_FALSE(m_broker->getHistory("AAPL", "1day", kStart).has_value());
 }
-

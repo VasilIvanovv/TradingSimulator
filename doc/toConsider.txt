@@ -1,0 +1,10 @@
+Integration tests for the data gather
+
+Think about optimizations in the csv local cache.
+Reading the data and filling it into a in memory container, checking Log(n) for every
+element i like n*Log(n) just for getting the data.
+Maybe keep the data for the last read file or something else.
+
+
+Think about getting the prices every X hours, so the tracking layer knows when to buy/sell
+Maybe that should be done in the execution layer

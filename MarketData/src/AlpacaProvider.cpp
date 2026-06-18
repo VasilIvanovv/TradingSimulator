@@ -1,4 +1,4 @@
-#include "data/AlpacaProvider.hpp"
+#include "AlpacaProvider.hpp"
 
 namespace trading {
 

@@ -9,64 +9,45 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Static CRT to match the static vcpkg triplet (x64-windows-static) — keeps
+# every dependency, including GTest, statically linked. GTest built as a DLL
+# has a known MSVC issue where TEST()/TEST_F() static-initializer
+# registration silently fails to cross the DLL boundary.
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 option(TRADING_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
-# --- Dependencies (managed by vcpkg) ---
-find_package(CURL          REQUIRED)
-find_package(nlohmann_json REQUIRED)
-find_package(GTest         REQUIRED)
-
-# --- Libraries ---
-
-# Header-only interfaces and POD types
-add_library(trading_core INTERFACE)
-target_include_directories(trading_core INTERFACE ${PROJECT_SOURCE_DIR}/include)
-target_compile_features(trading_core INTERFACE cxx_std_23)
-
-# Concrete data-layer implementations
-add_library(trading_data STATIC
-    src/Logging.cpp
-    src/data/DataBroker.cpp
-    src/data/TwelveDataProvider.cpp
-    src/data/AlpacaProvider.cpp
-    src/data/CsvLocalCache.cpp
-)
-target_link_libraries(trading_data PUBLIC
-    trading_core
-    nlohmann_json::nlohmann_json
-    CURL::libcurl
-)
-
-add_executable(trading_simulator src/main.cpp)
-target_link_libraries(trading_simulator PRIVATE trading_data)
-
-# --- Tests ---
-enable_testing()
-
-add_executable(trading_tests
-    tests/DataBrokerTest.cpp
-)
-target_link_libraries(trading_tests PRIVATE
-    trading_data
-    GTest::gtest_main
-    GTest::gmock
-)
-include(GoogleTest)
-gtest_discover_tests(trading_tests)
-
-# --- Warnings ---
-set(_trading_targets trading_data trading_simulator trading_tests)
-
-foreach(_target IN LISTS _trading_targets)
+# Shared helper: apply standard warnings to a target.
+macro(trading_apply_warnings target)
     if(MSVC)
-        target_compile_options(${_target} PRIVATE /W4)
+        target_compile_options(${target} PRIVATE /W4)
         if(TRADING_WARNINGS_AS_ERRORS)
-            target_compile_options(${_target} PRIVATE /WX)
+            target_compile_options(${target} PRIVATE /WX)
         endif()
     else()
-        target_compile_options(${_target} PRIVATE -Wall -Wextra -Wpedantic)
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
         if(TRADING_WARNINGS_AS_ERRORS)
-            target_compile_options(${_target} PRIVATE -Werror)
+            target_compile_options(${target} PRIVATE -Werror)
         endif()
     endif()
-endforeach()
+endmacro()
+
+# --- Core library (Logging + shared include path) ---
+add_library(trading_core STATIC src/Logging.cpp)
+target_include_directories(trading_core PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_compile_features(trading_core PUBLIC cxx_std_23)
+trading_apply_warnings(trading_core)
+
+# --- Shared domain types (header-only) ---
+add_library(trading_domain INTERFACE)
+target_include_directories(trading_domain INTERFACE ${PROJECT_SOURCE_DIR}/Domain/include)
+
+# --- Modules ---
+enable_testing()
+add_subdirectory(MarketData)
+add_subdirectory(Execution)
+
+# --- Executable ---
+add_executable(trading_simulator src/main.cpp)
+target_link_libraries(trading_simulator PRIVATE trading_market_data)
+trading_apply_warnings(trading_simulator)

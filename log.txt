@@ -1,0 +1,344 @@
+[2026-06-14 13:18:51.0808023] [INFO]    [main.cpp:21] Fetching AAPL 1day from 2025-01-01
+[2026-06-14 13:18:51.1125489] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2025-01-01
+[2026-06-14 13:18:51.1137598] [DEBUG]   [TwelveDataProvider.cpp:70] TwelveData GET api.twelvedata.com/time_series?symbol=AAPL&interval=1day&start_date=2025-01-01&outputsize=5000&apikey=09bc29fdccc54c0ca12c5c7353d3cb1f
+[2026-06-14 13:18:51.5711988] [INFO]    [TwelveDataProvider.cpp:104] TwelveData: 362 candles for AAPL/1day (credits used: 1)
+[2026-06-14 13:18:51.5794831] [INFO]    [DataBroker.cpp:39] Provider contributed 362 candles for AAPL/1day
+[2026-06-14 13:18:51.5829987] [INFO]    [DataBroker.cpp:59] Assembled 362 candles for AAPL/1day
+[2026-06-16 23:11:33.6076039] [INFO]    [DataBroker.cpp:20] Cache hit for AAPL/1day from 2024-01-01 (1 candles)
+[2026-06-16 23:11:33.6447963] [INFO]    [DataBroker.cpp:20] Cache hit for AAPL/1day from 2024-01-01 (2 candles)
+[2026-06-16 23:11:33.6466318] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6471683] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6477210] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for AAPL/1day
+[2026-06-16 23:11:33.6482200] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6487326] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:11:33.6492388] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for AAPL/1day
+[2026-06-16 23:11:33.6500652] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6505617] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6510637] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:11:33.6515950] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6520951] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:11:33.6525832] [ERROR]   [DataBroker.cpp:50] All providers exhausted for AAPL/1day
+[2026-06-16 23:11:33.6533709] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6538672] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6543790] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for AAPL/1day
+[2026-06-16 23:11:33.6548723] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6553727] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:11:33.6558674] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for AAPL/1day
+[2026-06-16 23:11:33.6567317] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6572221] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6577492] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:11:33.6582335] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6587476] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for AAPL/1day
+[2026-06-16 23:11:33.6592405] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for AAPL/1day
+[2026-06-16 23:11:33.6600673] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6606384] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6611821] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:11:33.6617208] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6622329] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:11:33.6627369] [INFO]    [DataBroker.cpp:59] Assembled 4 candles for AAPL/1day
+[2026-06-16 23:11:33.6636906] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6642327] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6648202] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:11:33.6653223] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6658353] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:11:33.6663365] [INFO]    [DataBroker.cpp:59] Assembled 3 candles for AAPL/1day
+[2026-06-16 23:11:33.6671693] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6677018] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6682159] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for AAPL/1day
+[2026-06-16 23:11:33.6687414] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6692427] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:11:33.6698631] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for AAPL/1day
+[2026-06-16 23:11:33.6703658] [WARNING] [DataBroker.cpp:71] Cache write failed for AAPL/1day
+[2026-06-16 23:11:33.6711491] [DEBUG]   [DataBroker.cpp:25] Cache miss for MSFT/1h
+[2026-06-16 23:11:33.6716862] [DEBUG]   [DataBroker.cpp:35] Trying provider for MSFT/1h from 2023-06-01
+[2026-06-16 23:11:33.6722284] [WARNING] [DataBroker.cpp:45] Provider failed for MSFT/1h
+[2026-06-16 23:11:33.6727625] [DEBUG]   [DataBroker.cpp:35] Trying provider for MSFT/1h from 2023-06-01
+[2026-06-16 23:11:33.6733136] [WARNING] [DataBroker.cpp:45] Provider failed for MSFT/1h
+[2026-06-16 23:11:33.6738000] [ERROR]   [DataBroker.cpp:50] All providers exhausted for MSFT/1h
+[2026-06-16 23:11:33.6746354] [DEBUG]   [DataBroker.cpp:25] Cache miss for MSFT/1h
+[2026-06-16 23:11:33.6751225] [DEBUG]   [DataBroker.cpp:35] Trying provider for MSFT/1h from 2024-01-01
+[2026-06-16 23:11:33.6756705] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for MSFT/1h
+[2026-06-16 23:11:33.6761576] [DEBUG]   [DataBroker.cpp:35] Trying provider for MSFT/1h from 2024-01-01
+[2026-06-16 23:11:33.6766907] [WARNING] [DataBroker.cpp:45] Provider failed for MSFT/1h
+[2026-06-16 23:11:33.6771795] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for MSFT/1h
+[2026-06-16 23:11:33.6780342] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6786086] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6792009] [INFO]    [DataBroker.cpp:39] Provider contributed 3 candles for AAPL/1day
+[2026-06-16 23:11:33.6797993] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6803606] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:11:33.6808510] [INFO]    [DataBroker.cpp:59] Assembled 3 candles for AAPL/1day
+[2026-06-16 23:11:33.6817430] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6822452] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6827697] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:11:33.6832695] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6838012] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:11:33.6843113] [INFO]    [DataBroker.cpp:59] Assembled 4 candles for AAPL/1day
+[2026-06-16 23:11:33.6851476] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6856560] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6861842] [INFO]    [DataBroker.cpp:39] Provider contributed 3 candles for AAPL/1day
+[2026-06-16 23:11:33.6867077] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6872534] [INFO]    [DataBroker.cpp:39] Provider contributed 3 candles for AAPL/1day
+[2026-06-16 23:11:33.6877765] [INFO]    [DataBroker.cpp:59] Assembled 4 candles for AAPL/1day
+[2026-06-16 23:11:33.6886278] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6891474] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6896929] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:11:33.6901886] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6907120] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:11:33.6912179] [INFO]    [DataBroker.cpp:59] Assembled 2 candles for AAPL/1day
+[2026-06-16 23:11:33.6920538] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:11:33.6925521] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6930727] [INFO]    [DataBroker.cpp:39] Provider contributed 0 candles for AAPL/1day
+[2026-06-16 23:11:33.6935753] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6941960] [INFO]    [DataBroker.cpp:39] Provider contributed 0 candles for AAPL/1day
+[2026-06-16 23:11:33.6947060] [ERROR]   [DataBroker.cpp:50] All providers exhausted for AAPL/1day
+[2026-06-16 23:11:33.6954525] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:11:33.6959812] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for AAPL/1day
+[2026-06-16 23:11:33.6964901] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for AAPL/1day
+[2026-06-16 23:11:33.6970612] [ERROR]   [DataBroker.cpp:50] All providers exhausted for AAPL/1day
+[2026-06-16 23:11:33.6995070] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 2 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_SaveThenLoad_RoundTrip_PreservesAllFields\AAPL\1day.csv
+[2026-06-16 23:11:33.7003231] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7032502] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_HandlesLargeVolumeAndFractionalPrices\AAPL\1day.csv
+[2026-06-16 23:11:33.7040034] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7068650] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_RemainConsistent\AAPL\1day.csv
+[2026-06-16 23:11:33.7075914] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7095420] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_RemainConsistent\AAPL\1day.csv
+[2026-06-16 23:11:33.7104001] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7132442] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_RemainConsistent\AAPL\1day.csv
+[2026-06-16 23:11:33.7144235] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7171759] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_RemainConsistent\AAPL\1day.csv
+[2026-06-16 23:11:33.7183096] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7209588] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_RemainConsistent\AAPL\1day.csv
+[2026-06-16 23:11:33.7219407] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7250515] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_CreatesSymbolSubdirectoryAndIntervalFile\AAPL\1day.csv
+[2026-06-16 23:11:33.7296235] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 0 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_EmptyCandles_ReturnsTrue_ButLoadFindsNoData\AAPL\1day.csv
+[2026-06-16 23:11:33.7305105] [DEBUG]   [CsvLocalCache.cpp:103] CsvLocalCache: no candles from 2000-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_EmptyCandles_ReturnsTrue_ButLoadFindsNoData\AAPL\1day.csv
+[2026-06-16 23:11:33.7335705] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_OverwritesPreviousData_DoesNotAppend\AAPL\1day.csv
+[2026-06-16 23:11:33.7355959] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_OverwritesPreviousData_DoesNotAppend\AAPL\1day.csv
+[2026-06-16 23:11:33.7363347] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7392159] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentSymbols_StoredSeparately\AAPL\1day.csv
+[2026-06-16 23:11:33.7416308] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentSymbols_StoredSeparately\MSFT\1day.csv
+[2026-06-16 23:11:33.7425473] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7432343] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for MSFT/1day from 2000-01-01
+[2026-06-16 23:11:33.7466114] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentIntervalsSameSymbol_StoredSeparately\AAPL\1day.csv
+[2026-06-16 23:11:33.7486276] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentIntervalsSameSymbol_StoredSeparately\AAPL\1h.csv
+[2026-06-16 23:11:33.7493554] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7499987] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1h from 2000-01-01
+[2026-06-16 23:11:33.7529907] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_SaveThenLoad_SymbolWithSpecialCharacters\BRK.B\1day.csv
+[2026-06-16 23:11:33.7537278] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for BRK.B/1day from 2000-01-01
+[2026-06-16 23:11:33.7579182] [ERROR]   [CsvLocalCache.cpp:45] CsvLocalCache: failed to create directory C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_ReturnsFalse_WhenSymbolDirectoryPathIsBlockedByFile\AAPL: Cannot create a file when that file already exists.
+[2026-06-16 23:11:33.7592095] [DEBUG]   [CsvLocalCache.cpp:79] CsvLocalCache: no cache file at C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_NoCacheFile_ReturnsFalse_OutCandlesUnchanged\AAPL\1day.csv
+[2026-06-16 23:11:33.7614241] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 3 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_FiltersOutCandlesBeforeStartDate\AAPL\1day.csv
+[2026-06-16 23:11:33.7621847] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 2 candles for AAPL/1day from 2024-01-02
+[2026-06-16 23:11:33.7650587] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 2 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateExactlyMatchesACandle_InclusiveBoundary\AAPL\1day.csv
+[2026-06-16 23:11:33.7658059] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1day from 2024-01-02
+[2026-06-16 23:11:33.7686939] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateAfterAllData_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:11:33.7694166] [DEBUG]   [CsvLocalCache.cpp:103] CsvLocalCache: no candles from 2099-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateAfterAllData_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:11:33.7723538] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 2 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateBeforeAllData_ReturnsAllCandles\AAPL\1day.csv
+[2026-06-16 23:11:33.7730979] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 2 candles for AAPL/1day from 1900-01-01
+[2026-06-16 23:11:33.7761324] [DEBUG]   [CsvLocalCache.cpp:68] CsvLocalCache: saved 1 candles to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_AppendsToNonEmptyOutCandles_PreservesExistingContent\AAPL\1day.csv
+[2026-06-16 23:11:33.7768798] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7801370] [WARNING] [CsvLocalCache.cpp:97] CsvLocalCache: skipping malformed line in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_SkipsMalformedLines_ContinuesWithValidOnes\AAPL\1day.csv: invalid stod argument
+[2026-06-16 23:11:33.7806976] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7838138] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7868994] [WARNING] [CsvLocalCache.cpp:97] CsvLocalCache: skipping malformed line in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_OnlyMalformedLines_ReturnsFalse\AAPL\1day.csv: invalid stod argument
+[2026-06-16 23:11:33.7874475] [DEBUG]   [CsvLocalCache.cpp:103] CsvLocalCache: no candles from 2000-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_OnlyMalformedLines_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:11:33.7906355] [INFO]    [CsvLocalCache.cpp:111] CsvLocalCache: loaded 3 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:11:33.7937209] [DEBUG]   [CsvLocalCache.cpp:103] CsvLocalCache: no candles from 2000-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_HeaderOnlyFile_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:11:33.7965832] [DEBUG]   [CsvLocalCache.cpp:79] CsvLocalCache: no cache file at C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_ReturnsFalse_WhenPathIsDirectoryNotFile\AAPL\1day.csv
+[2026-06-16 23:14:00.7167185] [INFO]    [DataBroker.cpp:20] Cache hit for AAPL/1day from 2024-01-01 (1 candles)
+[2026-06-16 23:14:00.7357681] [INFO]    [DataBroker.cpp:20] Cache hit for AAPL/1day from 2024-01-01 (2 candles)
+[2026-06-16 23:14:00.7368614] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7373897] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7379219] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for AAPL/1day
+[2026-06-16 23:14:00.7384261] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7389422] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:14:00.7394471] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for AAPL/1day
+[2026-06-16 23:14:00.7402828] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7407794] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7413039] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:14:00.7418076] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7423082] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:14:00.7428710] [ERROR]   [DataBroker.cpp:50] All providers exhausted for AAPL/1day
+[2026-06-16 23:14:00.7436833] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7441740] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7448125] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for AAPL/1day
+[2026-06-16 23:14:00.7455569] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7463245] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:14:00.7470677] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for AAPL/1day
+[2026-06-16 23:14:00.7483486] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7490663] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7497947] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:14:00.7504945] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7513130] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for AAPL/1day
+[2026-06-16 23:14:00.7520697] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for AAPL/1day
+[2026-06-16 23:14:00.7530683] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7535725] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7540944] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:14:00.7545844] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7551014] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:14:00.7556146] [INFO]    [DataBroker.cpp:59] Assembled 4 candles for AAPL/1day
+[2026-06-16 23:14:00.7564280] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7569181] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7576724] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:14:00.7581843] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7587368] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:14:00.7592531] [INFO]    [DataBroker.cpp:59] Assembled 3 candles for AAPL/1day
+[2026-06-16 23:14:00.7601375] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7607021] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7612362] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for AAPL/1day
+[2026-06-16 23:14:00.7617268] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7622319] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:14:00.7628158] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for AAPL/1day
+[2026-06-16 23:14:00.7633285] [WARNING] [DataBroker.cpp:71] Cache write failed for AAPL/1day
+[2026-06-16 23:14:00.7642199] [DEBUG]   [DataBroker.cpp:25] Cache miss for MSFT/1h
+[2026-06-16 23:14:00.7647116] [DEBUG]   [DataBroker.cpp:35] Trying provider for MSFT/1h from 2023-06-01
+[2026-06-16 23:14:00.7652615] [WARNING] [DataBroker.cpp:45] Provider failed for MSFT/1h
+[2026-06-16 23:14:00.7657727] [DEBUG]   [DataBroker.cpp:35] Trying provider for MSFT/1h from 2023-06-01
+[2026-06-16 23:14:00.7662919] [WARNING] [DataBroker.cpp:45] Provider failed for MSFT/1h
+[2026-06-16 23:14:00.7668210] [ERROR]   [DataBroker.cpp:50] All providers exhausted for MSFT/1h
+[2026-06-16 23:14:00.7676278] [DEBUG]   [DataBroker.cpp:25] Cache miss for MSFT/1h
+[2026-06-16 23:14:00.7681178] [DEBUG]   [DataBroker.cpp:35] Trying provider for MSFT/1h from 2024-01-01
+[2026-06-16 23:14:00.7686312] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for MSFT/1h
+[2026-06-16 23:14:00.7691625] [DEBUG]   [DataBroker.cpp:35] Trying provider for MSFT/1h from 2024-01-01
+[2026-06-16 23:14:00.7696687] [WARNING] [DataBroker.cpp:45] Provider failed for MSFT/1h
+[2026-06-16 23:14:00.7701939] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for MSFT/1h
+[2026-06-16 23:14:00.7710527] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7716586] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7722543] [INFO]    [DataBroker.cpp:39] Provider contributed 3 candles for AAPL/1day
+[2026-06-16 23:14:00.7729430] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7734810] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:14:00.7740092] [INFO]    [DataBroker.cpp:59] Assembled 3 candles for AAPL/1day
+[2026-06-16 23:14:00.7748565] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7753603] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7758950] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:14:00.7764475] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7770053] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:14:00.7775056] [INFO]    [DataBroker.cpp:59] Assembled 4 candles for AAPL/1day
+[2026-06-16 23:14:00.7783655] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7788574] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7794197] [INFO]    [DataBroker.cpp:39] Provider contributed 3 candles for AAPL/1day
+[2026-06-16 23:14:00.7799095] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7804591] [INFO]    [DataBroker.cpp:39] Provider contributed 3 candles for AAPL/1day
+[2026-06-16 23:14:00.7809896] [INFO]    [DataBroker.cpp:59] Assembled 4 candles for AAPL/1day
+[2026-06-16 23:14:00.7818272] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7823417] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7828597] [WARNING] [DataBroker.cpp:45] Provider failed for AAPL/1day
+[2026-06-16 23:14:00.7833649] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7838927] [INFO]    [DataBroker.cpp:39] Provider contributed 2 candles for AAPL/1day
+[2026-06-16 23:14:00.7844025] [INFO]    [DataBroker.cpp:59] Assembled 2 candles for AAPL/1day
+[2026-06-16 23:14:00.7852323] [DEBUG]   [DataBroker.cpp:25] Cache miss for AAPL/1day
+[2026-06-16 23:14:00.7857351] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7862557] [INFO]    [DataBroker.cpp:39] Provider contributed 0 candles for AAPL/1day
+[2026-06-16 23:14:00.7867529] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7873083] [INFO]    [DataBroker.cpp:39] Provider contributed 0 candles for AAPL/1day
+[2026-06-16 23:14:00.7878887] [ERROR]   [DataBroker.cpp:50] All providers exhausted for AAPL/1day
+[2026-06-16 23:14:00.7886349] [DEBUG]   [DataBroker.cpp:35] Trying provider for AAPL/1day from 2024-01-01
+[2026-06-16 23:14:00.7891747] [INFO]    [DataBroker.cpp:39] Provider contributed 1 candles for AAPL/1day
+[2026-06-16 23:14:00.7896844] [INFO]    [DataBroker.cpp:59] Assembled 1 candles for AAPL/1day
+[2026-06-16 23:14:00.7902767] [ERROR]   [DataBroker.cpp:50] All providers exhausted for AAPL/1day
+[2026-06-16 23:14:00.7927789] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 2 candles (added/updated 2) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_SaveThenLoad_RoundTrip_PreservesAllFields\AAPL\1day.csv
+[2026-06-16 23:14:00.7936817] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.7966154] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_HandlesLargeVolumeAndFractionalPrices\AAPL\1day.csv
+[2026-06-16 23:14:00.7974529] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8003203] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_RemainConsistent\AAPL\1day.csv
+[2026-06-16 23:14:00.8011446] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8032381] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 2 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_RemainConsistent\AAPL\1day.csv
+[2026-06-16 23:14:00.8040499] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8072599] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_CreatesSymbolSubdirectoryAndIntervalFile\AAPL\1day.csv
+[2026-06-16 23:14:00.8103931] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 0 candles (added/updated 0) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_EmptyCandles_ReturnsTrue_ButLoadFindsNoData\AAPL\1day.csv
+[2026-06-16 23:14:00.8112780] [DEBUG]   [CsvLocalCache.cpp:128] CsvLocalCache: no candles from 2000-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_EmptyCandles_ReturnsTrue_ButLoadFindsNoData\AAPL\1day.csv
+[2026-06-16 23:14:00.8142951] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DisjointRanges_MergesRatherThanOverwriting\AAPL\1day.csv
+[2026-06-16 23:14:00.8165228] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 2 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DisjointRanges_MergesRatherThanOverwriting\AAPL\1day.csv
+[2026-06-16 23:14:00.8173390] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8204719] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_OverlappingTimestamp_NewValueOverwritesOld\AAPL\1day.csv
+[2026-06-16 23:14:00.8230023] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_OverlappingTimestamp_NewValueOverwritesOld\AAPL\1day.csv
+[2026-06-16 23:14:00.8238435] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8267809] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_MergedResult_IsSortedByTimestamp\AAPL\1day.csv
+[2026-06-16 23:14:00.8289131] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 3 candles (added/updated 2) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_MergedResult_IsSortedByTimestamp\AAPL\1day.csv
+[2026-06-16 23:14:00.8297520] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 3 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8325943] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentSymbols_StoredSeparately\AAPL\1day.csv
+[2026-06-16 23:14:00.8347926] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentSymbols_StoredSeparately\MSFT\1day.csv
+[2026-06-16 23:14:00.8356433] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8364002] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for MSFT/1day from 2000-01-01
+[2026-06-16 23:14:00.8396811] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentIntervalsSameSymbol_StoredSeparately\AAPL\1day.csv
+[2026-06-16 23:14:00.8419061] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentIntervalsSameSymbol_StoredSeparately\AAPL\1h.csv
+[2026-06-16 23:14:00.8427476] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8434652] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1h from 2000-01-01
+[2026-06-16 23:14:00.8465656] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_SaveThenLoad_SymbolWithSpecialCharacters\BRK.B\1day.csv
+[2026-06-16 23:14:00.8473653] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for BRK.B/1day from 2000-01-01
+[2026-06-16 23:14:00.8525047] [ERROR]   [CsvLocalCache.cpp:71] CsvLocalCache: failed to create directory C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_ReturnsFalse_WhenSymbolDirectoryPathIsBlockedByFile\AAPL: Cannot create a file when that file already exists.
+[2026-06-16 23:14:00.8541803] [DEBUG]   [CsvLocalCache.cpp:116] CsvLocalCache: no cache file at C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_NoCacheFile_ReturnsFalse_OutCandlesUnchanged\AAPL\1day.csv
+[2026-06-16 23:14:00.8566703] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 3 candles (added/updated 3) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_FiltersOutCandlesBeforeStartDate\AAPL\1day.csv
+[2026-06-16 23:14:00.8576010] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2024-01-02
+[2026-06-16 23:14:00.8605593] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 2 candles (added/updated 2) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateExactlyMatchesACandle_InclusiveBoundary\AAPL\1day.csv
+[2026-06-16 23:14:00.8613776] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2024-01-02
+[2026-06-16 23:14:00.8642831] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateAfterAllData_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:14:00.8652301] [DEBUG]   [CsvLocalCache.cpp:128] CsvLocalCache: no candles from 2099-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateAfterAllData_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:14:00.8684034] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 2 candles (added/updated 2) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateBeforeAllData_ReturnsAllCandles\AAPL\1day.csv
+[2026-06-16 23:14:00.8692894] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 1900-01-01
+[2026-06-16 23:14:00.8722062] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_AppendsToNonEmptyOutCandles_PreservesExistingContent\AAPL\1day.csv
+[2026-06-16 23:14:00.8730229] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8763082] [WARNING] [CsvLocalCache.cpp:52] CsvLocalCache: skipping malformed line in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_SkipsMalformedLines_ContinuesWithValidOnes\AAPL\1day.csv: invalid stod argument
+[2026-06-16 23:14:00.8769039] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8800426] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8832853] [WARNING] [CsvLocalCache.cpp:52] CsvLocalCache: skipping malformed line in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_OnlyMalformedLines_ReturnsFalse\AAPL\1day.csv: invalid stod argument
+[2026-06-16 23:14:00.8838610] [DEBUG]   [CsvLocalCache.cpp:128] CsvLocalCache: no candles from 2000-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_OnlyMalformedLines_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:14:00.8870154] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 3 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:00.8900951] [DEBUG]   [CsvLocalCache.cpp:128] CsvLocalCache: no candles from 2000-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_HeaderOnlyFile_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:14:00.8930207] [DEBUG]   [CsvLocalCache.cpp:128] CsvLocalCache: no candles from 2000-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_ReturnsFalse_WhenPathIsDirectoryNotFile\AAPL\1day.csv
+[2026-06-16 23:14:36.0611792] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 2 candles (added/updated 2) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_SaveThenLoad_RoundTrip_PreservesAllFields\AAPL\1day.csv
+[2026-06-16 23:14:36.0814028] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.0844974] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_HandlesLargeVolumeAndFractionalPrices\AAPL\1day.csv
+[2026-06-16 23:14:36.0853383] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.0883938] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_AccumulateViaMerge\AAPL\1day.csv
+[2026-06-16 23:14:36.0892592] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.0913165] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 2 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_AccumulateViaMerge\AAPL\1day.csv
+[2026-06-16 23:14:36.0921145] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.0941141] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 3 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_AccumulateViaMerge\AAPL\1day.csv
+[2026-06-16 23:14:36.0949192] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 3 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.0969283] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 4 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_AccumulateViaMerge\AAPL\1day.csv
+[2026-06-16 23:14:36.0977351] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 4 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.0997598] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 5 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_MultipleSaveLoadCycles_AccumulateViaMerge\AAPL\1day.csv
+[2026-06-16 23:14:36.1005809] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 5 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.1035274] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_CreatesSymbolSubdirectoryAndIntervalFile\AAPL\1day.csv
+[2026-06-16 23:14:36.1068355] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 0 candles (added/updated 0) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_EmptyCandles_ReturnsTrue_ButLoadFindsNoData\AAPL\1day.csv
+[2026-06-16 23:14:36.1076691] [DEBUG]   [CsvLocalCache.cpp:128] CsvLocalCache: no candles from 2000-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_EmptyCandles_ReturnsTrue_ButLoadFindsNoData\AAPL\1day.csv
+[2026-06-16 23:14:36.1105884] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DisjointRanges_MergesRatherThanOverwriting\AAPL\1day.csv
+[2026-06-16 23:14:36.1127115] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 2 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DisjointRanges_MergesRatherThanOverwriting\AAPL\1day.csv
+[2026-06-16 23:14:36.1135120] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.1164440] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_OverlappingTimestamp_NewValueOverwritesOld\AAPL\1day.csv
+[2026-06-16 23:14:36.1186673] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_OverlappingTimestamp_NewValueOverwritesOld\AAPL\1day.csv
+[2026-06-16 23:14:36.1194578] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.1224418] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_MergedResult_IsSortedByTimestamp\AAPL\1day.csv
+[2026-06-16 23:14:36.1246005] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 3 candles (added/updated 2) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_MergedResult_IsSortedByTimestamp\AAPL\1day.csv
+[2026-06-16 23:14:36.1254102] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 3 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.1284068] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentSymbols_StoredSeparately\AAPL\1day.csv
+[2026-06-16 23:14:36.1305907] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentSymbols_StoredSeparately\MSFT\1day.csv
+[2026-06-16 23:14:36.1313870] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.1320779] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for MSFT/1day from 2000-01-01
+[2026-06-16 23:14:36.1353236] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentIntervalsSameSymbol_StoredSeparately\AAPL\1day.csv
+[2026-06-16 23:14:36.1375388] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_DifferentIntervalsSameSymbol_StoredSeparately\AAPL\1h.csv
+[2026-06-16 23:14:36.1384519] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.1391688] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1h from 2000-01-01
+[2026-06-16 23:14:36.1423571] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_SaveThenLoad_SymbolWithSpecialCharacters\BRK.B\1day.csv
+[2026-06-16 23:14:36.1432267] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for BRK.B/1day from 2000-01-01
+[2026-06-16 23:14:36.1473069] [ERROR]   [CsvLocalCache.cpp:71] CsvLocalCache: failed to create directory C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Save_ReturnsFalse_WhenSymbolDirectoryPathIsBlockedByFile\AAPL: Cannot create a file when that file already exists.
+[2026-06-16 23:14:36.1485514] [DEBUG]   [CsvLocalCache.cpp:116] CsvLocalCache: no cache file at C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_NoCacheFile_ReturnsFalse_OutCandlesUnchanged\AAPL\1day.csv
+[2026-06-16 23:14:36.1508262] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 3 candles (added/updated 3) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_FiltersOutCandlesBeforeStartDate\AAPL\1day.csv
+[2026-06-16 23:14:36.1517035] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2024-01-02
+[2026-06-16 23:14:36.1546511] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 2 candles (added/updated 2) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateExactlyMatchesACandle_InclusiveBoundary\AAPL\1day.csv
+[2026-06-16 23:14:36.1554899] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2024-01-02
+[2026-06-16 23:14:36.1584301] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateAfterAllData_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:14:36.1592273] [DEBUG]   [CsvLocalCache.cpp:128] CsvLocalCache: no candles from 2099-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateAfterAllData_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:14:36.1622240] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 2 candles (added/updated 2) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_StartDateBeforeAllData_ReturnsAllCandles\AAPL\1day.csv
+[2026-06-16 23:14:36.1630346] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 1900-01-01
+[2026-06-16 23:14:36.1659770] [DEBUG]   [CsvLocalCache.cpp:105] CsvLocalCache: saved 1 candles (added/updated 1) to C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_AppendsToNonEmptyOutCandles_PreservesExistingContent\AAPL\1day.csv
+[2026-06-16 23:14:36.1669941] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 1 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.1705757] [WARNING] [CsvLocalCache.cpp:52] CsvLocalCache: skipping malformed line in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_SkipsMalformedLines_ContinuesWithValidOnes\AAPL\1day.csv: invalid stod argument
+[2026-06-16 23:14:36.1712960] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.1749149] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 2 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.1781817] [WARNING] [CsvLocalCache.cpp:52] CsvLocalCache: skipping malformed line in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_OnlyMalformedLines_ReturnsFalse\AAPL\1day.csv: invalid stod argument
+[2026-06-16 23:14:36.1787932] [DEBUG]   [CsvLocalCache.cpp:128] CsvLocalCache: no candles from 2000-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_OnlyMalformedLines_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:14:36.1819595] [INFO]    [CsvLocalCache.cpp:136] CsvLocalCache: loaded 3 candles for AAPL/1day from 2000-01-01
+[2026-06-16 23:14:36.1853791] [DEBUG]   [CsvLocalCache.cpp:128] CsvLocalCache: no candles from 2000-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_HeaderOnlyFile_ReturnsFalse\AAPL\1day.csv
+[2026-06-16 23:14:36.1883975] [DEBUG]   [CsvLocalCache.cpp:128] CsvLocalCache: no candles from 2000-01-01 in C:\Users\vasil\AppData\Local\Temp\CsvLocalCacheTest_Load_ReturnsFalse_WhenPathIsDirectoryNotFile\AAPL\1day.csv
