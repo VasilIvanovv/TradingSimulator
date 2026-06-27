@@ -1,0 +1,43 @@
++------------------------+
+                           |     IBrokerAccount     | <--- Pure Abstract Interface
+                           +------------------------+
+                           | + ~IBrokerAccount()    |
+                           | + executeOrder(ticket) | = 0 (Returns ExecutionReceipt)
+                           | + getAvailableCash()   | = 0 (Returns double)
+                           +------------------------+
+                                       ^
+                                       | Inherits / Implements
+                    +------------------+------------------+
+                    |                                     |
+         +--------------------+                +----------------------+
+         |    PaperAccount    |                |     RealAccount      | <--- Future Extension
+         +--------------------+                +----------------------+
+         | - m_cash: double   |                | - m_apiKey: string   |
+         | - m_positions: map |                | - m_secret: string   |
+         |   <string, double> |                +----------------------+
+         +--------------------+                | + executeOrder()     | (Performs network HTTPS
+         | + executeOrder()   | (Updates local | + getAvailableCash() |  REST serialization)
+         | + getAvailableCash()|  memory maps) +----------------------+
+         +--------------------+
+
+         [Main Controller]            [PaperAccount]             [m_positions Map]
+        |                           |                            |
+        |--- executeOrder(ticket) ->|                            |
+        |    (Symbol: "AAPL")       |                            |
+        |                           |-- 1. Check Cash Balance    |
+        |                           |   (Cash >= Total Cost?)    |
+        |                           |                            |
+        |                           |-- 2. Deduct Cash Balance   |
+        |                           |                            |
+        |                           |--- 3. Update Inventory --->| (Increments AAPL share
+        |                           |                            |  count in memory hash)
+        |                           |                            |
+        |                           |-- 4. Generate Receipt      |
+        |<-- Returns Receipt -------|   (Status: FILLED)         |
+        |    (With execution price) |                            |
+
+
+
+        RealAccount would forward orders to a real broker API (e.g. Alpaca) via HTTPS REST.
+        State (cash, positions) lives on the broker's servers; getAvailableCash() queries the API.
+        Not needed while working with virtual/paper trading.

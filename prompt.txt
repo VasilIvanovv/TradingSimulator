@@ -1,0 +1,12 @@
+Hi! I am starting a new personal C++ project for my portfolio and I need your help as my mentor and guide step-by-step.
+
+Here is the project specification we discussed in a previous session:
+- Goal: A high-performance Trading Backtesting Engine written in pure, modern C++ (C++17/20). The application will load historical financial data (e.g., a massive CSV file with Bitcoin or stock prices over 5 years), simulate trading strategies, and output detailed performance metrics.
+- Key Technical Features:
+  1. Fast Data Ingestion: Efficient CSV parsing using modern C++ features like std::string_view and optimal file I/O buffer management.
+  2. Strategy Module: An abstract, extensible architecture allowing users to define custom quantitative rules (e.g., Moving Average Crossover).
+  3. Portfolio & Order Simulator: Tracks cash balance, active positions, transaction fees, and executes market/limit orders.
+  4. Performance Analytics: Calculates critical financial metrics like Total Return, Max Drawdown, Sharpe Ratio, and Win Rate.
+- Focus: Thread safety (if processing multiple assets concurrently), zero-allocation in the core loop to maximize throughput, and high algorithmic efficiency.
+
+I want to start from the absolute beginning. Please help me set up the project structure with CMake and guide me on how to design the data models for the historical price bars (OHLCV data) and how to parse the CSV file efficiently. Where do we begin?

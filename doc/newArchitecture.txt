@@ -1,0 +1,20 @@
+================================= BACKEND PROCESS BOUNDARY =================================
+                                                                             
+             +-------------------------------------------------+             
+             |                Main Controller                  |  <--- Entry Point & IPC Gate
+             +-------------------------------------------------+             
+               /                        |                      \             
+              / (Background Thread)     |                       \ (Synchronous)
+             v                          v                        v           
+    +-----------------+        +-----------------+        +-----------------+
+    | Ingestion Layer |        | Tracking Layer  |        | Execution Layer |
+    +-----------------+        +-----------------+        +-----------------+
+    | - DataBroker    |        | - LimitTracker  |        | - PaperAccount  |
+    | - IDataProvider |        | - RuleRegistry  |        | - LiveBrokerAPI |
+    | - ILocalCache   |        +-----------------+        +-----------------+
+    +-----------------+                 |                          |         
+         /         \                    v                          v         
+        v           v          [Evaluates Prices]         [Commits Orders]   
+   [Web APIs]    [Disk Storage]                                              
+                  (.csv files)                                               
+============================================================================================
