@@ -1,35 +1,35 @@
 +------------------------+
-                           |    IBrokerExecution    | <--- Pure Abstract Interface
+                           |     IBrokerAccount     | <--- Pure Abstract Interface
                            +------------------------+
-                           | + ~IBrokerExecution()  |
-                           | + ExecuteOrder(ticket) | = 0 (Returns ExecutionReceipt)
-                           | + GetAvailableCash()   | = 0 (Returns double)
+                           | + ~IBrokerAccount()    |
+                           | + executeOrder(ticket) | = 0 (Returns ExecutionReceipt)
+                           | + getAvailableCash()   | = 0 (Returns double)
                            +------------------------+
                                        ^
                                        | Inherits / Implements
                     +------------------+------------------+
                     |                                     |
          +--------------------+                +----------------------+
-         |    PaperAccount    |                |  LiveAlpacaExecution | <--- Future Extension
+         |    PaperAccount    |                |     RealAccount      | <--- Future Extension
          +--------------------+                +----------------------+
          | - m_cash: double   |                | - m_apiKey: string   |
          | - m_positions: map |                | - m_secret: string   |
          |   <string, double> |                +----------------------+
-         +--------------------+                | + ExecuteOrder()     | (Performs network HTTPS
-         | + ExecuteOrder()   | (Updates local | + GetAvailableCash() |  REST serialization)
-         | + GetAvailableCash()|  memory maps) +----------------------+
+         +--------------------+                | + executeOrder()     | (Performs network HTTPS
+         | + executeOrder()   | (Updates local | + getAvailableCash() |  REST serialization)
+         | + getAvailableCash()|  memory maps) +----------------------+
          +--------------------+
 
          [Main Controller]            [PaperAccount]             [m_positions Map]
         |                           |                            |
-        |--- ExecuteOrder(ticket) ->|                            |
+        |--- executeOrder(ticket) ->|                            |
         |    (Symbol: "AAPL")       |                            |
         |                           |-- 1. Check Cash Balance    |
         |                           |   (Cash >= Total Cost?)    |
         |                           |                            |
         |                           |-- 2. Deduct Cash Balance   |
         |                           |                            |
-        |                           |--- 3. Update Inventory --->| (Increments AAPL share 
+        |                           |--- 3. Update Inventory --->| (Increments AAPL share
         |                           |                            |  count in memory hash)
         |                           |                            |
         |                           |-- 4. Generate Receipt      |
@@ -38,4 +38,6 @@
 
 
 
-        For now we don't need the LiveAlpacaExecution, because we are only working with virtual stocks
+        RealAccount would forward orders to a real broker API (e.g. Alpaca) via HTTPS REST.
+        State (cash, positions) lives on the broker's servers; getAvailableCash() queries the API.
+        Not needed while working with virtual/paper trading.

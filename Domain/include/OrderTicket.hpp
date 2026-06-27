@@ -10,6 +10,7 @@ struct OrderTicket {
     OrderSide side{};
     double quantity{};
     double price{};
+    std::string timestamp;
 };
 
 } // namespace trading

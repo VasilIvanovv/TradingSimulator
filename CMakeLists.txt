@@ -46,6 +46,7 @@ target_include_directories(trading_domain INTERFACE ${PROJECT_SOURCE_DIR}/Domain
 enable_testing()
 add_subdirectory(MarketData)
 add_subdirectory(Execution)
+add_subdirectory(Tracking)
 
 # --- Executable ---
 add_executable(trading_simulator src/main.cpp)

@@ -8,6 +8,7 @@ target_include_directories(trading_execution PUBLIC
 )
 target_link_libraries(trading_execution PUBLIC
     trading_core
+    trading_domain
 )
 trading_apply_warnings(trading_execution)
 

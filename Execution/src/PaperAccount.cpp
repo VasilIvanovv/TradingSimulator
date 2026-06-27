@@ -22,7 +22,9 @@ ExecutionReceipt PaperAccount::executeOrder(const OrderTicket& ticket) {
         m_cash += totalCost;
     }
 
-    return ExecutionReceipt{ ExecutionStatus::Filled, ticket.price };
+    ExecutionReceipt receipt{ ExecutionStatus::Filled, ticket.price };
+    m_tradeHistory.push_back({ ticket, receipt });
+    return receipt;
 }
 
 double PaperAccount::getAvailableCash() const { return m_cash; }
@@ -30,6 +32,14 @@ double PaperAccount::getAvailableCash() const { return m_cash; }
 double PaperAccount::getPosition(const std::string& symbol) const {
     const auto it = m_positions.find(symbol);
     return it != m_positions.end() ? it->second : 0.0;
+}
+
+std::unordered_map<std::string, double> PaperAccount::getAllPositions() const {
+    return m_positions;
+}
+
+const std::vector<TradeRecord>& PaperAccount::getTradeHistory() const {
+    return m_tradeHistory;
 }
 
 } // namespace trading
