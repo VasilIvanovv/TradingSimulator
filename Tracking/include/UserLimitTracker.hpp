@@ -2,24 +2,35 @@
 
 #include "IDecisionEngine.hpp"
 #include "OrderSide.hpp"
+#include <functional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace trading {
 
-// Fires once when the latest close price crosses the trigger price.
-// Buy:  triggers when close <= triggerPrice
-// Sell: triggers when close >= triggerPrice
-class UserLimitTracker : public IDecisionEngine {
+/**
+ * Manages all user-defined limit rules across any number of symbols.
+ * Each rule fires once when the latest close price crosses its trigger price
+ * and is removed immediately, regardless of whether the order fills or rejects.
+ */
+class UserLimitTracker {
 public:
-    UserLimitTracker(double triggerPrice, OrderSide side, double quantity);
+    void addRule(const std::string& symbol, double triggerPrice, OrderSide side, double quantity);
+    void removeRules(const std::string& symbol);
+    bool hasRules() const;
 
-    std::optional<OrderTicket> evaluate(std::string_view symbol,
-                                        const std::vector<PriceCandle>& history) override;
+    /** Evaluate all rules, remove those that trigger, and return their tickets. */
+    std::vector<OrderTicket> evaluate(const PriceSource& priceSource);
 
 private:
-    double    m_triggerPrice;
-    OrderSide m_side;
-    double    m_quantity;
-    bool      m_fired{ false };
+    struct LimitRule {
+        double    triggerPrice;
+        OrderSide side;
+        double    quantity;
+    };
+
+    std::unordered_map<std::string, std::vector<LimitRule>> m_rules;
 };
 
 } // namespace trading

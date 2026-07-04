@@ -3,50 +3,91 @@
 
 using namespace trading;
 
-static std::vector<PriceCandle> makeHistory(double close, std::string timestamp = "2025-01-15") {
-    PriceCandle c;
-    c.close     = close;
-    c.timestamp = std::move(timestamp);
-    return { c };
+static PriceSource makeSource(double close, std::string timestamp = "2025-01-15") {
+    return [close, timestamp](std::string_view) -> std::vector<PriceCandle> {
+        PriceCandle c;
+        c.close     = close;
+        c.timestamp = timestamp;
+        return { c };
+    };
 }
 
-// Minimal engine for testing addEngine — always triggers a buy.
+// Always places a buy — simulates an algorithmic engine for a fixed symbol.
 class AlwaysBuyEngine : public IDecisionEngine {
 public:
-    std::optional<OrderTicket> evaluate(std::string_view symbol,
-                                        const std::vector<PriceCandle>& history) override {
-        if (history.empty()) return std::nullopt;
-        return OrderTicket{ std::string(symbol), OrderSide::Buy, 1.0,
-                            history.back().close, history.back().timestamp };
+    explicit AlwaysBuyEngine(std::string symbol) : m_symbol(std::move(symbol)) {}
+
+    std::vector<OrderTicket> evaluate(const PriceSource& priceSource) override {
+        auto history = priceSource(m_symbol);
+        if (history.empty()) return {};
+        return { OrderTicket{ m_symbol, OrderSide::Buy, 1.0,
+                              history.back().close, history.back().timestamp } };
     }
+
+private:
+    std::string m_symbol;
 };
 
 class MarketWatcherTest : public ::testing::Test {
 protected:
     std::vector<OrderTicket> captured;
 
+    // Callback that always reports a successful fill.
     MarketWatcher makeWatcher(double close) {
         return MarketWatcher(
-            [close](std::string_view) { return makeHistory(close); },
-            [this](OrderTicket t) { captured.push_back(std::move(t)); }
+            makeSource(close),
+            [this](const OrderTicket& t) { captured.push_back(t); return true; }
         );
     }
 };
 
 TEST_F(MarketWatcherTest, Tick_FiresCallbackWhenRuleTriggered) {
-    auto watcher = makeWatcher(148.0); // below buy limit of 150
+    auto watcher = makeWatcher(148.0);
     watcher.addRule("AAPL", 150.0, OrderSide::Buy, 10.0);
     watcher.tick();
     ASSERT_EQ(captured.size(), 1u);
     EXPECT_EQ(captured[0].symbol, "AAPL");
-    EXPECT_EQ(captured[0].side, OrderSide::Buy);
+    EXPECT_EQ(captured[0].side,   OrderSide::Buy);
 }
 
 TEST_F(MarketWatcherTest, Tick_NoCallbackWhenRuleNotTriggered) {
-    auto watcher = makeWatcher(155.0); // above buy limit of 150
+    auto watcher = makeWatcher(155.0);
     watcher.addRule("AAPL", 150.0, OrderSide::Buy, 10.0);
     watcher.tick();
     EXPECT_TRUE(captured.empty());
+}
+
+TEST_F(MarketWatcherTest, Tick_RuleConsumedAfterFill) {
+    auto watcher = makeWatcher(148.0);
+    watcher.addRule("AAPL", 150.0, OrderSide::Buy, 10.0);
+    watcher.tick();
+    watcher.tick();
+    EXPECT_EQ(captured.size(), 1u); // fired only once
+}
+
+TEST_F(MarketWatcherTest, Tick_RuleRemovedAfterRejection) {
+    std::vector<OrderTicket> captured2;
+    MarketWatcher watcher(
+        makeSource(148.0),
+        [&](const OrderTicket& t) { captured2.push_back(t); return false; } // always reject
+    );
+    watcher.addRule("AAPL", 150.0, OrderSide::Buy, 10.0);
+    watcher.tick();
+    watcher.tick();
+    EXPECT_EQ(captured2.size(), 1u); // fired once, then removed
+}
+
+TEST_F(MarketWatcherTest, Tick_RejectionCallbackFired) {
+    std::vector<OrderTicket> rejections;
+    MarketWatcher watcher(
+        makeSource(148.0),
+        [](const OrderTicket&) { return false; },
+        [&](const OrderTicket& t) { rejections.push_back(t); }
+    );
+    watcher.addRule("AAPL", 150.0, OrderSide::Buy, 10.0);
+    watcher.tick();
+    ASSERT_EQ(rejections.size(), 1u);
+    EXPECT_EQ(rejections[0].symbol, "AAPL");
 }
 
 TEST_F(MarketWatcherTest, Tick_MultipleRulesSameSymbol_AllEvaluated) {
@@ -59,20 +100,23 @@ TEST_F(MarketWatcherTest, Tick_MultipleRulesSameSymbol_AllEvaluated) {
 
 TEST_F(MarketWatcherTest, Tick_MultipleSymbols_AllEvaluated) {
     MarketWatcher watcher(
-        [](std::string_view symbol) {
-            return makeHistory(symbol == "AAPL" ? 148.0 : 300.0);
+        [](std::string_view symbol) -> std::vector<PriceCandle> {
+            PriceCandle c;
+            c.close     = (symbol == "AAPL") ? 148.0 : 305.0;
+            c.timestamp = "2025-01-15";
+            return { c };
         },
-        [this](OrderTicket t) { captured.push_back(std::move(t)); }
+        [this](const OrderTicket& t) { captured.push_back(t); return true; }
     );
     watcher.addRule("AAPL", 150.0, OrderSide::Buy,  10.0);
-    watcher.addRule("MSFT", 290.0, OrderSide::Sell,  5.0);
+    watcher.addRule("MSFT", 300.0, OrderSide::Sell,  5.0);
     watcher.tick();
     ASSERT_EQ(captured.size(), 2u);
 }
 
 TEST_F(MarketWatcherTest, AddEngine_FiresCallbackFromAlgorithmicEngine) {
     auto watcher = makeWatcher(148.0);
-    watcher.addEngine("AAPL", std::make_unique<AlwaysBuyEngine>());
+    watcher.addEngine(std::make_unique<AlwaysBuyEngine>("AAPL"));
     watcher.tick();
     ASSERT_EQ(captured.size(), 1u);
     EXPECT_EQ(captured[0].symbol, "AAPL");
@@ -81,7 +125,7 @@ TEST_F(MarketWatcherTest, AddEngine_FiresCallbackFromAlgorithmicEngine) {
 TEST_F(MarketWatcherTest, AddRule_AndEngine_BothEvaluated) {
     auto watcher = makeWatcher(148.0);
     watcher.addRule("AAPL", 150.0, OrderSide::Buy, 10.0);
-    watcher.addEngine("AAPL", std::make_unique<AlwaysBuyEngine>());
+    watcher.addEngine(std::make_unique<AlwaysBuyEngine>("AAPL"));
     watcher.tick();
     EXPECT_EQ(captured.size(), 2u);
 }

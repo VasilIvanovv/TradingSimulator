@@ -2,7 +2,7 @@
 
 #include "IDecisionEngine.hpp"
 #include "OrderTicket.hpp"
-#include "PriceCandle.hpp"
+#include "UserLimitTracker.hpp"
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
@@ -11,30 +11,40 @@
 #include <mutex>
 #include <string>
 #include <thread>
-#include <unordered_map>
 #include <vector>
 
 namespace trading {
 
 /**
- * Polls price data on a fixed interval and evaluates registered rules and
- * algorithmic engines. Fires an order callback whenever a rule or engine
- * triggers. The polling loop starts automatically when the first rule/engine
- * is added and stops when the last one is removed.
+ * Polls price data on a fixed interval and evaluates registered limit rules
+ * and algorithmic engines. Fires an order callback whenever any of them trigger.
+ * The polling loop starts automatically when the first rule or engine is added
+ * and stops when all are removed.
  */
 class MarketWatcher {
 public:
-    /** Callback invoked to fetch the price history for a given symbol. */
-    using PriceSource   = std::function<std::vector<PriceCandle>(std::string_view)>;
-
-    /** Callback invoked with a filled-in OrderTicket whenever a rule or engine triggers. */
-    using OrderCallback = std::function<void(OrderTicket)>;
+    /**
+     * Callback invoked with an OrderTicket whenever a rule or engine triggers.
+     * Must return true if the order was filled, false if it was rejected.
+     * On rejection the rule is removed and onOrderRejected (if set) is called.
+     */
+    using OrderCallback = std::function<bool(const OrderTicket&)>;
 
     /**
-     * @param priceSource      Called each tick to retrieve candle history per symbol.
-     * @param onOrderTriggered Called with the resulting OrderTicket when a rule fires.
+     * Optional callback invoked when a limit rule is triggered but the execution
+     * is rejected (e.g. insufficient funds or no position). The rule is removed
+     * after this call regardless.
      */
-    MarketWatcher(PriceSource priceSource, OrderCallback onOrderTriggered);
+    using RejectionCallback = std::function<void(const OrderTicket&)>;
+
+    /**
+     * @param priceSource      Called by engines and rules to retrieve candle history per symbol.
+     * @param onOrderTriggered Called with the resulting OrderTicket when a rule fires.
+     * @param onOrderRejected  Optional — called when an order is rejected so the caller
+     *                         can notify the user. Rule is removed either way.
+     */
+    MarketWatcher(PriceSource priceSource, OrderCallback onOrderTriggered,
+                  RejectionCallback onOrderRejected = nullptr);
     ~MarketWatcher();
 
     /**
@@ -49,13 +59,13 @@ public:
     void addRule(const std::string& symbol, double triggerPrice, OrderSide side, double quantity);
 
     /**
-     * Register an algorithmic decision engine for @p symbol.
-     * The engine is evaluated each tick and may produce orders according to its own logic.
+     * Register an algorithmic decision engine.
+     * The engine manages its own symbol subscriptions and fetches prices via PriceSource.
      */
-    void addEngine(const std::string& symbol, std::unique_ptr<IDecisionEngine> engine);
+    void addEngine(std::unique_ptr<IDecisionEngine> engine);
 
     /**
-     * Remove all rules and engines registered for @p symbol.
+     * Remove all limit rules registered for @p symbol.
      * Stops the polling loop if no rules or engines remain.
      */
     void removeRules(const std::string& symbol);
@@ -64,21 +74,23 @@ public:
     void setInterval(std::chrono::seconds interval);
 
     /**
-     * Run one evaluation pass immediately — fetches prices for all registered
-     * symbols and evaluates every rule and engine. Used for testing and manual control.
+     * Run one evaluation pass immediately — evaluates all rules and engines.
+     * Used for testing and manual control.
      */
     void tick();
 
 private:
-    void insertEngine(const std::string& symbol, std::unique_ptr<IDecisionEngine> engine);
+    bool isEmpty() const; // must be called with m_mutex held
     void startLoop();
     void stopLoop();
     void runLoop();
 
-    PriceSource   m_priceSource;
-    OrderCallback m_orderCallback;
+    PriceSource       m_priceSource;
+    OrderCallback     m_orderCallback;
+    RejectionCallback m_rejectionCallback;
     std::chrono::seconds m_interval{ 60 };
-    std::unordered_map<std::string, std::vector<std::unique_ptr<IDecisionEngine>>> m_engines;
+    UserLimitTracker m_limitTracker;
+    std::vector<std::unique_ptr<IDecisionEngine>> m_engines;
     mutable std::mutex      m_mutex;
     std::condition_variable m_cv;
     std::thread             m_thread;

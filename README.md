@@ -10,7 +10,12 @@
 **Configure** (one-liner):
 cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -S . -B build
 
-On first run vcpkg will automatically download and build all dependencies (curl, nlohmann-json, gtest). This takes a few minutes once.
+On first run vcpkg will automatically download and build all dependencies (curl, nlohmann-json, gtest, cpp-httplib). This takes a few minutes once.
+
+> **If `cpp-httplib` fails to download** (GitHub rate limit or network issue), install it manually then re-run cmake:
+> ```
+> vcpkg install cpp-httplib:x64-windows-static
+> ```
 
 > The static triplet (`x64-windows-static`) is required: GTest built as a DLL has a known MSVC issue where `TEST`/`TEST_F` registration silently fails across the DLL boundary, so all dependencies are statically linked.
 

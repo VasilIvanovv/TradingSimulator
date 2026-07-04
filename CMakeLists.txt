@@ -49,6 +49,10 @@ add_subdirectory(Execution)
 add_subdirectory(Tracking)
 
 # --- Executable ---
-add_executable(trading_simulator src/main.cpp)
-target_link_libraries(trading_simulator PRIVATE trading_market_data)
+add_executable(trading_simulator src/main.cpp src/TradingController.cpp)
+target_link_libraries(trading_simulator PRIVATE
+    trading_market_data
+    trading_execution
+    trading_tracking
+)
 trading_apply_warnings(trading_simulator)

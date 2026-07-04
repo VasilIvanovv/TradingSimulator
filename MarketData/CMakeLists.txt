@@ -1,6 +1,7 @@
 find_package(CURL          REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(GTest         REQUIRED)
+find_package(httplib       CONFIG REQUIRED)
 
 # --- MarketData library ---
 add_library(trading_market_data STATIC
@@ -33,3 +34,15 @@ target_link_libraries(trading_tests PRIVATE
 include(GoogleTest)
 gtest_discover_tests(trading_tests)
 trading_apply_warnings(trading_tests)
+
+# --- Integration tests ---
+add_executable(trading_market_data_integration_tests
+    tests/integration/MarketDataIntegrationTest.cpp
+)
+target_link_libraries(trading_market_data_integration_tests PRIVATE
+    trading_market_data
+    GTest::gtest_main
+    httplib::httplib
+)
+gtest_discover_tests(trading_market_data_integration_tests)
+trading_apply_warnings(trading_market_data_integration_tests)

@@ -1,42 +1,44 @@
 #include "MarketWatcher.hpp"
-#include "UserLimitTracker.hpp"
 
 namespace trading {
 
-MarketWatcher::MarketWatcher(PriceSource priceSource, OrderCallback onOrderTriggered)
+MarketWatcher::MarketWatcher(PriceSource priceSource, OrderCallback onOrderTriggered,
+                             RejectionCallback onOrderRejected)
     : m_priceSource(std::move(priceSource))
-    , m_orderCallback(std::move(onOrderTriggered)) {}
+    , m_orderCallback(std::move(onOrderTriggered))
+    , m_rejectionCallback(std::move(onOrderRejected)) {}
 
-MarketWatcher::~MarketWatcher() {
-    stopLoop();
-}
+MarketWatcher::~MarketWatcher() { stopLoop(); }
 
-void MarketWatcher::addRule(const std::string& symbol, double triggerPrice,
+void MarketWatcher::addRule(const std::string &symbol, double triggerPrice,
                             OrderSide side, double quantity) {
-    insertEngine(symbol, std::make_unique<UserLimitTracker>(triggerPrice, side, quantity));
-}
-
-void MarketWatcher::addEngine(const std::string& symbol, std::unique_ptr<IDecisionEngine> engine) {
-    insertEngine(symbol, std::move(engine));
-}
-
-void MarketWatcher::insertEngine(const std::string& symbol, std::unique_ptr<IDecisionEngine> engine) {
     bool shouldStart = false;
     {
         std::lock_guard lock(m_mutex);
-        shouldStart = m_engines.empty();
-        m_engines[symbol].push_back(std::move(engine));
+        shouldStart = isEmpty();
+        m_limitTracker.addRule(symbol, triggerPrice, side, quantity);
     }
     if (shouldStart)
         startLoop();
 }
 
-void MarketWatcher::removeRules(const std::string& symbol) {
+void MarketWatcher::addEngine(std::unique_ptr<IDecisionEngine> engine) {
+    bool shouldStart = false;
+    {
+        std::lock_guard lock(m_mutex);
+        shouldStart = isEmpty();
+        m_engines.push_back(std::move(engine));
+    }
+    if (shouldStart)
+        startLoop();
+}
+
+void MarketWatcher::removeRules(const std::string &symbol) {
     bool shouldStop = false;
     {
         std::lock_guard lock(m_mutex);
-        m_engines.erase(symbol);
-        shouldStop = m_engines.empty();
+        m_limitTracker.removeRules(symbol);
+        shouldStop = isEmpty();
     }
     if (shouldStop)
         stopLoop();
@@ -48,35 +50,44 @@ void MarketWatcher::setInterval(std::chrono::seconds interval) {
 }
 
 void MarketWatcher::tick() {
-    std::vector<std::string> symbols;
+    // Snapshot engine pointers under lock so we don't hold it during price
+    // fetches.
+    std::vector<IDecisionEngine *> engineSnapshot;
     {
         std::lock_guard lock(m_mutex);
-        for (const auto& [symbol, _] : m_engines)
-            symbols.push_back(symbol);
+        for (auto &e : m_engines)
+            engineSnapshot.push_back(e.get());
     }
 
-    for (const auto& symbol : symbols) {
-        const auto history = m_priceSource(symbol);
+    // Limit rules are removed as soon as they trigger, fill or reject.
+    for (const auto& ticket : m_limitTracker.evaluate(m_priceSource)) {
+        if (!m_orderCallback(ticket) && m_rejectionCallback)
+            m_rejectionCallback(ticket);
+    }
 
-        std::vector<OrderTicket> triggered;
-        {
-            std::lock_guard lock(m_mutex);
-            auto it = m_engines.find(symbol);
-            if (it == m_engines.end())
-                continue;
-            for (auto& engine : it->second)
-                if (auto ticket = engine->evaluate(symbol, history))
-                    triggered.push_back(*ticket);
-        }
-
-        for (const auto& ticket : triggered)
+    // Algorithmic engines: fire and let the engine manage its own state.
+    for (auto* engine : engineSnapshot)
+        for (const auto& ticket : engine->evaluate(m_priceSource))
             m_orderCallback(ticket);
+
+    // Auto-stop if all limit rules were consumed and no engines remain.
+    {
+        std::lock_guard lock(m_mutex);
+        if (isEmpty())
+            m_running = false;
     }
 }
 
+bool MarketWatcher::isEmpty() const {
+    return !m_limitTracker.hasRules() && m_engines.empty();
+}
+
 void MarketWatcher::startLoop() {
+    // Join a previously auto-stopped thread before spawning a new one.
+    if (m_thread.joinable())
+        m_thread.join();
     m_running = true;
-    m_thread  = std::thread(&MarketWatcher::runLoop, this);
+    m_thread = std::thread(&MarketWatcher::runLoop, this);
 }
 
 void MarketWatcher::stopLoop() {
@@ -91,7 +102,8 @@ void MarketWatcher::runLoop() {
     while (m_running) {
         {
             std::unique_lock lock(m_mutex);
-            m_cv.wait_for(lock, m_interval, [this] { return !m_running.load(); });
+            m_cv.wait_for(lock, m_interval,
+                          [this] { return !m_running.load(); });
         }
         if (m_running)
             tick();

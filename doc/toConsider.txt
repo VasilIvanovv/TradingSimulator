@@ -8,3 +8,8 @@ Maybe keep the data for the last read file or something else.
 
 Think about getting the prices every X hours, so the tracking layer knows when to buy/sell
 Maybe that should be done in the execution layer
+
+How will we handle the situation where the user 
+doesn't have money to buy stocks he has a rule to (or sell)
+
+Do we handle multiple users?

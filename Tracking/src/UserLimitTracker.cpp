@@ -2,22 +2,35 @@
 
 namespace trading {
 
-UserLimitTracker::UserLimitTracker(double triggerPrice, OrderSide side, double quantity)
-    : m_triggerPrice(triggerPrice), m_side(side), m_quantity(quantity) {}
+void UserLimitTracker::addRule(const std::string &symbol, double triggerPrice,
+                               OrderSide side, double quantity) {
+    m_rules[symbol].push_back({triggerPrice, side, quantity});
+}
 
-std::optional<OrderTicket> UserLimitTracker::evaluate(std::string_view symbol,
-                                                       const std::vector<PriceCandle>& history) {
-    if (m_fired || history.empty())
-        return std::nullopt;
+void UserLimitTracker::removeRules(const std::string &symbol) {
+    m_rules.erase(symbol);
+}
 
-    const auto& latest    = history.back();
-    const bool  triggered = (m_side == OrderSide::Buy) ? latest.close <= m_triggerPrice
-                                                        : latest.close >= m_triggerPrice;
-    if (!triggered)
-        return std::nullopt;
+bool UserLimitTracker::hasRules() const { return !m_rules.empty(); }
 
-    m_fired = true;
-    return OrderTicket{ std::string(symbol), m_side, m_quantity, latest.close, latest.timestamp };
+std::vector<OrderTicket>
+UserLimitTracker::evaluate(const PriceSource& priceSource) {
+    std::vector<OrderTicket> tickets;
+    for (auto& [symbol, rules] : m_rules) {
+        const auto history = priceSource(symbol);
+        if (history.empty()) continue;
+        const auto& latest = history.back();
+        std::erase_if(rules, [&](const LimitRule& rule) {
+            const bool hit = (rule.side == OrderSide::Buy) ? latest.close <= rule.triggerPrice
+                                                           : latest.close >= rule.triggerPrice;
+            if (hit)
+                tickets.push_back({ symbol, rule.side, rule.quantity,
+                                    latest.close, latest.timestamp });
+            return hit;
+        });
+    }
+    std::erase_if(m_rules, [](const auto& kv) { return kv.second.empty(); });
+    return tickets;
 }
 
 } // namespace trading

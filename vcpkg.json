@@ -4,6 +4,10 @@
     "dependencies": [
         "curl",
         "nlohmann-json",
-        "gtest"
+        "gtest",
+        {
+            "name": "cpp-httplib",
+            "default-features": false
+        }
     ]
 }
