@@ -48,11 +48,22 @@ add_subdirectory(MarketData)
 add_subdirectory(Execution)
 add_subdirectory(Tracking)
 
-# --- Executable ---
-add_executable(trading_simulator src/main.cpp src/TradingController.cpp)
-target_link_libraries(trading_simulator PRIVATE
+# --- Controller library (separate so API can link to it) ---
+add_library(trading_controller STATIC src/TradingController.cpp)
+target_include_directories(trading_controller PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(trading_controller PUBLIC
     trading_market_data
     trading_execution
     trading_tracking
+)
+trading_apply_warnings(trading_controller)
+
+add_subdirectory(API)
+
+# --- Executable ---
+add_executable(trading_simulator src/main.cpp)
+target_link_libraries(trading_simulator PRIVATE
+    trading_controller
+    trading_api
 )
 trading_apply_warnings(trading_simulator)

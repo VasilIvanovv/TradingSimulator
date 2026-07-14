@@ -2,7 +2,17 @@
 
 namespace trading {
 
-PaperAccount::PaperAccount(double initialCash) : m_cash(initialCash) {}
+PaperAccount::PaperAccount(double initialCash, std::unique_ptr<IAccountStore> store)
+    : m_store(std::move(store)) {
+    if (m_store) {
+        double savedCash{};
+        if (m_store->load(savedCash, m_positions, m_tradeHistory)) {
+            m_cash = savedCash;
+            return;
+        }
+    }
+    m_cash = initialCash;
+}
 
 ExecutionReceipt PaperAccount::executeOrder(const OrderTicket& ticket) {
     const double totalCost = ticket.price * ticket.quantity;
@@ -24,6 +34,13 @@ ExecutionReceipt PaperAccount::executeOrder(const OrderTicket& ticket) {
 
     ExecutionReceipt receipt{ ExecutionStatus::Filled, ticket.price };
     m_tradeHistory.push_back({ ticket, receipt });
+
+    if (m_store) {
+        const auto posIt = m_positions.find(ticket.symbol);
+        const double newPos = posIt != m_positions.end() ? posIt->second : 0.0;
+        m_store->persist(m_cash, ticket.symbol, newPos, m_tradeHistory.back());
+    }
+
     return receipt;
 }
 

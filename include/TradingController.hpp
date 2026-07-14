@@ -4,9 +4,11 @@
 #include "ExecutionReceipt.hpp"
 #include "IBrokerAccount.hpp"
 #include "MarketWatcher.hpp"
+#include "PriceCandle.hpp"
 #include "TradeRecord.hpp"
 #include <chrono>
 #include <memory>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -48,6 +50,11 @@ class TradingController {
 
     // --- Manual execution ---
     ExecutionReceipt placeOrder(const OrderTicket &ticket);
+
+    // --- Market data ---
+    std::optional<std::vector<PriceCandle>> getHistory(const std::string& symbol,
+                                                        const std::string& interval,
+                                                        const std::string& startDate);
 
   private:
     std::unique_ptr<IBrokerAccount> m_account;

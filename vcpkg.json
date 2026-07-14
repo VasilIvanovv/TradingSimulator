@@ -5,6 +5,7 @@
         "curl",
         "nlohmann-json",
         "gtest",
+        "sqlite3",
         {
             "name": "cpp-httplib",
             "default-features": false

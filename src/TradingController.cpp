@@ -61,4 +61,9 @@ ExecutionReceipt TradingController::placeOrder(const OrderTicket &ticket) {
     return m_account->executeOrder(ticket);
 }
 
+std::optional<std::vector<PriceCandle>> TradingController::getHistory(
+    const std::string& symbol, const std::string& interval, const std::string& startDate) {
+    return m_broker->getHistory(symbol, interval, startDate);
+}
+
 } // namespace trading

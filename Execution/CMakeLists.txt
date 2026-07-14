@@ -1,7 +1,9 @@
-find_package(GTest REQUIRED)
+find_package(GTest            REQUIRED)
+find_package(unofficial-sqlite3 CONFIG REQUIRED)
 
 add_library(trading_execution STATIC
     src/PaperAccount.cpp
+    src/SqliteAccountStore.cpp
 )
 target_include_directories(trading_execution PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -9,6 +11,7 @@ target_include_directories(trading_execution PUBLIC
 target_link_libraries(trading_execution PUBLIC
     trading_core
     trading_domain
+    unofficial::sqlite3::sqlite3
 )
 trading_apply_warnings(trading_execution)
 
