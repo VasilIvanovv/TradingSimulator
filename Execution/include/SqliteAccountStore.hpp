@@ -9,7 +9,7 @@ namespace trading {
 
 class SqliteAccountStore : public IAccountStore {
 public:
-    explicit SqliteAccountStore(const std::filesystem::path& dbPath);
+    SqliteAccountStore(const std::filesystem::path& dbPath, int userId);
     ~SqliteAccountStore() override;
 
     bool load(double& outCash,
@@ -23,9 +23,9 @@ public:
 
 private:
     void initSchema();
-    void exec(const char* sql);
 
     sqlite3* m_db{};
+    int      m_userId{};
 };
 
 } // namespace trading

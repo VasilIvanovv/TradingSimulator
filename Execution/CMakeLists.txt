@@ -11,6 +11,7 @@ target_include_directories(trading_execution PUBLIC
 target_link_libraries(trading_execution PUBLIC
     trading_core
     trading_domain
+    trading_common
     unofficial::sqlite3::sqlite3
 )
 trading_apply_warnings(trading_execution)

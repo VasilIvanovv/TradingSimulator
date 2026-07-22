@@ -42,6 +42,9 @@ trading_apply_warnings(trading_core)
 add_library(trading_domain INTERFACE)
 target_include_directories(trading_domain INTERFACE ${PROJECT_SOURCE_DIR}/Domain/include)
 
+# --- Common (shared utilities, header-only) ---
+add_subdirectory(Common)
+
 # --- Modules ---
 enable_testing()
 add_subdirectory(MarketData)

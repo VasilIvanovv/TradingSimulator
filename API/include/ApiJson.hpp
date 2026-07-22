@@ -51,6 +51,24 @@ std::string toJson(const ExecutionReceipt& receipt);
 std::string toJson(const std::vector<PriceCandle>& candles);
 
 /**
+ * @brief Parse a @c POST /auth/register request body.
+ * @param body UTF-8 JSON string. Required fields: username, password.
+ */
+RegisterRequest parseRegisterRequest(const std::string& body);
+
+/**
+ * @brief Parse a @c POST /auth/login request body.
+ * @param body UTF-8 JSON string. Required fields: username, password.
+ */
+LoginRequest parseLoginRequest(const std::string& body);
+
+/**
+ * @brief Serialize an auth response (register or login) to JSON.
+ * @return JSON object with key: token.
+ */
+std::string toJson(const AuthResponse& response);
+
+/**
  * @brief Serialize an error message to JSON.
  * @return JSON object with key: error.
  */

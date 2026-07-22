@@ -6,6 +6,8 @@
         "nlohmann-json",
         "gtest",
         "sqlite3",
+        "jwt-cpp",
+        "libsodium",
         {
             "name": "cpp-httplib",
             "default-features": false

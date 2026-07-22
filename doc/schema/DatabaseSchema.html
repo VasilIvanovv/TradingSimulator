@@ -1,0 +1,437 @@
+<title>Database Schema — TradingSimulator</title>
+<style>
+  :root {
+    --bg:           #F5F3EE;
+    --surface:      #FFFFFF;
+    --surface-alt:  #EDEAE3;
+    --border:       #D5CEBE;
+    --text:         #1C1A17;
+    --text-muted:   #7A7062;
+    --pk:           #B5772A;
+    --pk-bg:        rgba(181,119,42,0.10);
+    --fk:           #3D6FA0;
+    --fk-bg:        rgba(61,111,160,0.10);
+    --new:          #3A7558;
+    --new-bg:       rgba(58,117,88,0.08);
+    --new-border:   rgba(58,117,88,0.30);
+    --header-bg:    #EDE9E1;
+    --shadow:       0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:           #0D1622;
+      --surface:      #152033;
+      --surface-alt:  #1C2B40;
+      --border:       #243349;
+      --text:         #D9D4C7;
+      --text-muted:   #6D8099;
+      --pk:           #D4973A;
+      --pk-bg:        rgba(212,151,58,0.12);
+      --fk:           #5B91C2;
+      --fk-bg:        rgba(91,145,194,0.12);
+      --new:          #4D9970;
+      --new-bg:       rgba(77,153,112,0.10);
+      --new-border:   rgba(77,153,112,0.30);
+      --header-bg:    #1C2B40;
+      --shadow:       0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:           #F5F3EE;
+    --surface:      #FFFFFF;
+    --surface-alt:  #EDEAE3;
+    --border:       #D5CEBE;
+    --text:         #1C1A17;
+    --text-muted:   #7A7062;
+    --pk:           #B5772A;
+    --pk-bg:        rgba(181,119,42,0.10);
+    --fk:           #3D6FA0;
+    --fk-bg:        rgba(61,111,160,0.10);
+    --new:          #3A7558;
+    --new-bg:       rgba(58,117,88,0.08);
+    --new-border:   rgba(58,117,88,0.30);
+    --header-bg:    #EDE9E1;
+    --shadow:       0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  :root[data-theme="dark"] {
+    --bg:           #0D1622;
+    --surface:      #152033;
+    --surface-alt:  #1C2B40;
+    --border:       #243349;
+    --text:         #D9D4C7;
+    --text-muted:   #6D8099;
+    --pk:           #D4973A;
+    --pk-bg:        rgba(212,151,58,0.12);
+    --fk:           #5B91C2;
+    --fk-bg:        rgba(91,145,194,0.12);
+    --new:          #4D9970;
+    --new-bg:       rgba(77,153,112,0.10);
+    --new-border:   rgba(77,153,112,0.30);
+    --header-bg:    #1C2B40;
+    --shadow:       0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 48px 24px 64px;
+  }
+
+  .page { max-width: 960px; margin: 0 auto; }
+
+  .page-header { margin-bottom: 40px; }
+  .page-header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    text-wrap: balance;
+    margin-bottom: 6px;
+  }
+  .page-header p { color: var(--text-muted); font-size: 13px; }
+
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: fit-content;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .badge-pk  { background: var(--pk-bg);  color: var(--pk); }
+  .badge-fk  { background: var(--fk-bg);  color: var(--fk); }
+  .badge-new { background: var(--new-bg); color: var(--new); }
+
+  .schema-section { margin-bottom: 52px; }
+  .section-label {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 17px;
+    font-weight: bold;
+    color: var(--text);
+    margin-bottom: 6px;
+    text-wrap: balance;
+  }
+  .section-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+
+  .table-grid { display: grid; gap: 16px; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  @media (max-width: 720px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 721px) and (max-width: 900px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .entity {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .entity.is-new { border-color: var(--new-border); }
+
+  .entity-header {
+    padding: 10px 14px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .entity.is-new .entity-header {
+    background: var(--new-bg);
+    border-bottom-color: var(--new-border);
+  }
+  .entity-name {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.2px;
+  }
+  .entity-tag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--new); }
+
+  .columns { padding: 6px 0; }
+  .col-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-row:last-child { border-bottom: none; }
+  .col-row.is-new { background: var(--new-bg); }
+  .col-row.is-pk .col-name { color: var(--pk); font-weight: 600; }
+  .col-row.is-fk .col-name { color: var(--fk); }
+
+  .col-badge { flex-shrink: 0; }
+  .col-name { font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; color: var(--text); white-space: nowrap; }
+  .col-meta { text-align: right; flex-shrink: 0; }
+  .col-type { font-family: 'Consolas', 'Courier New', monospace; font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+  .col-ref  { font-family: 'Consolas', 'Courier New', monospace; font-size: 10px; color: var(--fk); white-space: nowrap; display: block; }
+  .col-note { font-size: 10px; color: var(--text-muted); white-space: nowrap; display: block; }
+
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 44px;
+    color: var(--text-muted);
+    font-size: 12px;
+    letter-spacing: 0.3px;
+  }
+  .section-divider::before,
+  .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+</style>
+
+<div class="page">
+
+  <header class="page-header">
+    <h1>Database Schema — TradingSimulator</h1>
+    <p>Current state and proposed changes for multi-user support</p>
+  </header>
+
+  <div class="legend">
+    <div class="legend-item"><span class="badge badge-pk">PK</span> Primary key</div>
+    <div class="legend-item"><span class="badge badge-fk">FK</span> Foreign key</div>
+    <div class="legend-item"><span class="badge badge-new">NEW</span> Added for multi-user</div>
+  </div>
+
+  <!-- CURRENT SCHEMA -->
+  <section class="schema-section">
+    <div class="section-label">Current schema — single user</div>
+    <div class="section-desc">Three independent tables. No relationships between them — they implicitly belong to one hard-coded user.</div>
+    <div class="table-grid grid-3">
+
+      <div class="entity">
+        <div class="entity-header"><span class="entity-name">account_state</span></div>
+        <div class="columns">
+          <div class="col-row is-pk">
+            <span class="col-badge"><span class="badge badge-pk">PK</span></span>
+            <span class="col-name">id</span>
+            <div class="col-meta"><span class="col-type">INTEGER</span><span class="col-note">always = 1</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">cash</span>
+            <div class="col-meta"><span class="col-type">REAL</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-header"><span class="entity-name">positions</span></div>
+        <div class="columns">
+          <div class="col-row is-pk">
+            <span class="col-badge"><span class="badge badge-pk">PK</span></span>
+            <span class="col-name">symbol</span>
+            <div class="col-meta"><span class="col-type">TEXT</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">quantity</span>
+            <div class="col-meta"><span class="col-type">REAL</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-header"><span class="entity-name">trade_history</span></div>
+        <div class="columns">
+          <div class="col-row is-pk">
+            <span class="col-badge"><span class="badge badge-pk">PK</span></span>
+            <span class="col-name">id</span>
+            <div class="col-meta"><span class="col-type">INTEGER</span><span class="col-note">autoincrement</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">symbol</span>
+            <div class="col-meta"><span class="col-type">TEXT</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">side</span>
+            <div class="col-meta"><span class="col-type">INTEGER</span><span class="col-note">0=Buy 1=Sell</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">quantity</span>
+            <div class="col-meta"><span class="col-type">REAL</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">price</span>
+            <div class="col-meta"><span class="col-type">REAL</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">timestamp</span>
+            <div class="col-meta"><span class="col-type">TEXT</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">execution_price</span>
+            <div class="col-meta"><span class="col-type">REAL</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-divider">proposed changes for multi-user support</div>
+
+  <!-- MULTI-USER SCHEMA -->
+  <section class="schema-section">
+    <div class="section-label">After multi-user support</div>
+    <div class="section-desc">A <code style="font-family:Consolas,monospace;font-size:12px">users</code> table is added. Every other table gains a <code style="font-family:Consolas,monospace;font-size:12px">user_id</code> foreign key, scoping all data to a specific user.</div>
+    <div class="table-grid grid-4">
+
+      <div class="entity is-new">
+        <div class="entity-header">
+          <span class="entity-name">users</span>
+          <span class="entity-tag">New table</span>
+        </div>
+        <div class="columns">
+          <div class="col-row is-pk is-new">
+            <span class="col-badge"><span class="badge badge-pk">PK</span></span>
+            <span class="col-name">id</span>
+            <div class="col-meta"><span class="col-type">INTEGER</span><span class="col-note">autoincrement</span></div>
+          </div>
+          <div class="col-row is-new">
+            <span class="col-badge"></span>
+            <span class="col-name">username</span>
+            <div class="col-meta"><span class="col-type">TEXT</span><span class="col-note">unique</span></div>
+          </div>
+          <div class="col-row is-new">
+            <span class="col-badge"></span>
+            <span class="col-name">password_hash</span>
+            <div class="col-meta"><span class="col-type">TEXT</span></div>
+          </div>
+          <div class="col-row is-new">
+            <span class="col-badge"></span>
+            <span class="col-name">created_at</span>
+            <div class="col-meta"><span class="col-type">TEXT</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-header"><span class="entity-name">account_state</span></div>
+        <div class="columns">
+          <div class="col-row is-pk is-new">
+            <span class="col-badge"><span class="badge badge-pk">PK</span></span>
+            <span class="col-name">user_id</span>
+            <div class="col-meta"><span class="col-type">INTEGER</span><span class="col-ref">→ users.id</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">cash</span>
+            <div class="col-meta"><span class="col-type">REAL</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-header"><span class="entity-name">positions</span></div>
+        <div class="columns">
+          <div class="col-row is-pk is-fk is-new">
+            <span class="col-badge"><span class="badge badge-pk">PK</span></span>
+            <span class="col-name">user_id</span>
+            <div class="col-meta"><span class="col-type">INTEGER</span><span class="col-ref">→ users.id</span></div>
+          </div>
+          <div class="col-row is-pk">
+            <span class="col-badge"><span class="badge badge-pk">PK</span></span>
+            <span class="col-name">symbol</span>
+            <div class="col-meta"><span class="col-type">TEXT</span><span class="col-note">composite PK</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">quantity</span>
+            <div class="col-meta"><span class="col-type">REAL</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-header"><span class="entity-name">trade_history</span></div>
+        <div class="columns">
+          <div class="col-row is-pk">
+            <span class="col-badge"><span class="badge badge-pk">PK</span></span>
+            <span class="col-name">id</span>
+            <div class="col-meta"><span class="col-type">INTEGER</span><span class="col-note">autoincrement</span></div>
+          </div>
+          <div class="col-row is-fk is-new">
+            <span class="col-badge"><span class="badge badge-fk">FK</span></span>
+            <span class="col-name">user_id</span>
+            <div class="col-meta"><span class="col-type">INTEGER</span><span class="col-ref">→ users.id</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">symbol</span>
+            <div class="col-meta"><span class="col-type">TEXT</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">side</span>
+            <div class="col-meta"><span class="col-type">INTEGER</span><span class="col-note">0=Buy 1=Sell</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">quantity</span>
+            <div class="col-meta"><span class="col-type">REAL</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">price</span>
+            <div class="col-meta"><span class="col-type">REAL</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">timestamp</span>
+            <div class="col-meta"><span class="col-type">TEXT</span></div>
+          </div>
+          <div class="col-row">
+            <span class="col-badge"></span>
+            <span class="col-name">execution_price</span>
+            <div class="col-meta"><span class="col-type">REAL</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>

@@ -49,6 +49,27 @@ struct GetHistoryRequest {
 };
 
 // ---------------------------------------------------------------------------
+// Auth requests / responses
+// ---------------------------------------------------------------------------
+
+/** @brief Body for @c POST /auth/register and @c POST /auth/login. */
+struct RegisterRequest {
+    std::string username;
+    std::string password;
+};
+
+/** @brief Body for @c POST /auth/login. */
+struct LoginRequest {
+    std::string username;
+    std::string password;
+};
+
+/** @brief Response for both auth endpoints. */
+struct AuthResponse {
+    std::string token; ///< Signed JWT. Send as: Authorization: Bearer <token>
+};
+
+// ---------------------------------------------------------------------------
 // Responses (server → client)
 // ---------------------------------------------------------------------------
 

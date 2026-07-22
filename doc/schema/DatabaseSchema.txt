@@ -1,0 +1,83 @@
+================================================================================
+  DATABASE SCHEMA -- TradingSimulator
+================================================================================
+
+
+CURRENT SCHEMA (Single User)
+--------------------------------------------------------------------------------
+
+  Three independent tables with no foreign key relationships.
+  All data implicitly belongs to one hard-coded user.
+
+  PK = Primary Key
+
+
+  +----------------------+    +------------------+    +----------------------+
+  |    account_state     |    |    positions     |    |    trade_history     |
+  +----------------------+    +------------------+    +----------------------+
+  | PK  id         INT   |    | PK  symbol  TEXT |    | PK  id         INT   |
+  |     (always = 1)     |    |     qty     REAL |    |     (autoincrement)  |
+  |     cash       REAL  |    +------------------+    |     symbol     TEXT  |
+  +----------------------+                            |     side       INT   |
+                                                      |     (0=Buy, 1=Sell)  |
+                                                      |     quantity   REAL  |
+                                                      |     price      REAL  |
+                                                      |     timestamp  TEXT  |
+                                                      |     exec_price REAL  |
+                                                      +----------------------+
+
+
+================================================================================
+
+
+PROPOSED SCHEMA -- After Multi-User Support
+================================================================================
+
+  A new "users" table is introduced. Every existing table gains a user_id
+  foreign key, scoping all data to a specific user.
+
+  PK = Primary Key    FK = Foreign Key    [NEW] = added for multi-user
+
+
+                         +-------------------------+
+                         |      users   [NEW]      |
+                         +-------------------------+
+                         | PK  id           INT    |
+                         |     (autoincrement)     |
+                         |     username     TEXT   |
+                         |     (unique)            |
+                         |     password_hash TEXT  |
+                         |     created_at   TEXT   |
+                         +-------------------------+
+                                    |
+              +---------------------+---------------------+
+              |                     |                     |
+              v                     v                     v
+  +----------------------+  +-------------------+  +----------------------+
+  |    account_state     |  |     positions     |  |    trade_history     |
+  +----------------------+  +-------------------+  +----------------------+
+  | PK/FK user_id   INT  |  | PK/FK user_id INT |  | PK  id         INT   |
+  |   [NEW] replaces     |  |   [NEW]           |  |     (autoincrement)  |
+  |         id = 1       |  | PK    symbol TEXT |  | FK  user_id    INT   |
+  |         cash   REAL  |  |       qty    REAL |  |   [NEW]              |
+  +----------------------+  +-------------------+  |     symbol     TEXT  |
+                                                   |     side       INT   |
+                                                   |     (0=Buy, 1=Sell)  |
+                                                   |     quantity   REAL  |
+                                                   |     price      REAL  |
+                                                   |     timestamp  TEXT  |
+                                                   |     exec_price REAL  |
+                                                   +----------------------+
+
+
+NOTES
+--------------------------------------------------------------------------------
+
+  account_state  -- PK changes from singleton (id = 1) to user_id.
+                    One row per user instead of one row total.
+
+  positions      -- PK changes from (symbol) to composite (user_id, symbol).
+                    Two users can now hold the same ticker independently.
+
+  trade_history  -- Gains user_id FK. The autoincrement id stays as PK since
+                    trades are not keyed by user alone.

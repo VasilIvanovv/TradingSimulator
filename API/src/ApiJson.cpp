@@ -84,6 +84,20 @@ std::string toJson(const std::vector<PriceCandle>& candles) {
     return nlohmann::json{{"candles", arr}}.dump();
 }
 
+RegisterRequest parseRegisterRequest(const std::string& body) {
+    const auto j = nlohmann::json::parse(body);
+    return {j.at("username").get<std::string>(), j.at("password").get<std::string>()};
+}
+
+LoginRequest parseLoginRequest(const std::string& body) {
+    const auto j = nlohmann::json::parse(body);
+    return {j.at("username").get<std::string>(), j.at("password").get<std::string>()};
+}
+
+std::string toJson(const AuthResponse& response) {
+    return nlohmann::json{{"token", response.token}}.dump();
+}
+
 std::string toJsonError(const std::string& message) {
     return nlohmann::json{{"error", message}}.dump();
 }
