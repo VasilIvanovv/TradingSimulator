@@ -51,6 +51,33 @@ std::string toJson(const ExecutionReceipt& receipt);
 std::string toJson(const std::vector<PriceCandle>& candles);
 
 /**
+ * @brief Serialize the symbol catalogue to JSON.
+ * @return JSON array of { symbol, name, sector } objects.
+ */
+std::string toJson(const std::vector<SymbolInfo>& symbols);
+
+/**
+ * @brief Serialize active limit rules to JSON.
+ * @return JSON array of { symbol, triggerPrice, side, quantity } objects.
+ */
+std::string toJson(const std::vector<ActiveRule>& rules);
+
+/** @brief Serialize the account list to JSON. */
+std::string toJson(const std::vector<AccountInfo>& accounts);
+
+/** @brief Parse a deposit request body. Required field: amount. */
+DepositRequest parseDepositRequest(const std::string& body);
+
+/** @brief Parse a create/rename account request body. Required field: name. */
+AccountNameRequest parseAccountNameRequest(const std::string& body);
+
+/** @brief Serialize a deposit-all result to JSON. */
+std::string toJson(const DepositAllResult& result);
+
+/** @brief Serialize a single account info to JSON. */
+std::string toJson(const AccountInfo& account);
+
+/**
  * @brief Parse a @c POST /auth/register request body.
  * @param body UTF-8 JSON string. Required fields: username, password.
  */

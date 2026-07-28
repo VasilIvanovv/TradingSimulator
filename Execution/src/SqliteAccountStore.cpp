@@ -6,8 +6,8 @@ namespace trading {
 
 using namespace db;
 
-SqliteAccountStore::SqliteAccountStore(const std::filesystem::path& dbPath, int userId)
-    : m_userId(userId) {
+SqliteAccountStore::SqliteAccountStore(const std::filesystem::path& dbPath, int accountId)
+    : m_accountId(accountId) {
     const int rc = sqlite3_open(dbPath.string().c_str(), &m_db);
     if (rc != SQLITE_OK) {
         const std::string err = sqlite3_errmsg(m_db);
@@ -27,18 +27,18 @@ void SqliteAccountStore::initSchema() {
     exec(m_db, "PRAGMA journal_mode=WAL;");
     exec(m_db, R"(
         CREATE TABLE IF NOT EXISTS account_state (
-            user_id INTEGER PRIMARY KEY,
-            cash    REAL    NOT NULL
+            account_id INTEGER PRIMARY KEY,
+            cash       REAL    NOT NULL
         );
         CREATE TABLE IF NOT EXISTS positions (
-            user_id  INTEGER NOT NULL,
-            symbol   TEXT    NOT NULL,
-            quantity REAL    NOT NULL,
-            PRIMARY KEY (user_id, symbol)
+            account_id INTEGER NOT NULL,
+            symbol     TEXT    NOT NULL,
+            quantity   REAL    NOT NULL,
+            PRIMARY KEY (account_id, symbol)
         );
         CREATE TABLE IF NOT EXISTS trade_history (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id         INTEGER NOT NULL,
+            account_id      INTEGER NOT NULL,
             symbol          TEXT    NOT NULL,
             side            INTEGER NOT NULL,
             quantity        REAL    NOT NULL,
@@ -53,8 +53,8 @@ bool SqliteAccountStore::load(double& outCash,
                                std::unordered_map<std::string, double>& outPositions,
                                std::vector<TradeRecord>& outTrades) {
     auto* stmt = prepare(m_db,
-        "SELECT cash FROM account_state WHERE user_id = ?;");
-    sqlite3_bind_int(stmt, 1, m_userId);
+        "SELECT cash FROM account_state WHERE account_id = ?;");
+    sqlite3_bind_int(stmt, 1, m_accountId);
     if (sqlite3_step(stmt) != SQLITE_ROW) {
         sqlite3_finalize(stmt);
         return false;
@@ -63,8 +63,8 @@ bool SqliteAccountStore::load(double& outCash,
     sqlite3_finalize(stmt);
 
     stmt = prepare(m_db,
-        "SELECT symbol, quantity FROM positions WHERE user_id = ?;");
-    sqlite3_bind_int(stmt, 1, m_userId);
+        "SELECT symbol, quantity FROM positions WHERE account_id = ?;");
+    sqlite3_bind_int(stmt, 1, m_accountId);
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         const std::string symbol =
             reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
@@ -74,8 +74,8 @@ bool SqliteAccountStore::load(double& outCash,
 
     stmt = prepare(m_db,
         "SELECT symbol, side, quantity, price, timestamp, execution_price "
-        "FROM trade_history WHERE user_id = ? ORDER BY id;");
-    sqlite3_bind_int(stmt, 1, m_userId);
+        "FROM trade_history WHERE account_id = ? ORDER BY id;");
+    sqlite3_bind_int(stmt, 1, m_accountId);
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         TradeRecord record;
         record.ticket.symbol =
@@ -100,34 +100,31 @@ void SqliteAccountStore::persist(double cash,
                                   const TradeRecord& trade) {
     exec(m_db, "BEGIN;");
     try {
-        // Cash
         auto* stmt = prepare(m_db,
-            "INSERT OR REPLACE INTO account_state (user_id, cash) VALUES (?, ?);");
-        sqlite3_bind_int   (stmt, 1, m_userId);
+            "INSERT OR REPLACE INTO account_state (account_id, cash) VALUES (?, ?);");
+        sqlite3_bind_int   (stmt, 1, m_accountId);
         sqlite3_bind_double(stmt, 2, cash);
         stepDml(stmt);
 
-        // Position — upsert or delete if fully closed
         if (newPosition > 0.0) {
             stmt = prepare(m_db,
-                "INSERT OR REPLACE INTO positions (user_id, symbol, quantity) VALUES (?, ?, ?);");
-            sqlite3_bind_int   (stmt, 1, m_userId);
+                "INSERT OR REPLACE INTO positions (account_id, symbol, quantity) VALUES (?, ?, ?);");
+            sqlite3_bind_int   (stmt, 1, m_accountId);
             sqlite3_bind_text  (stmt, 2, symbol.c_str(), -1, SQLITE_STATIC);
             sqlite3_bind_double(stmt, 3, newPosition);
         } else {
             stmt = prepare(m_db,
-                "DELETE FROM positions WHERE user_id = ? AND symbol = ?;");
-            sqlite3_bind_int (stmt, 1, m_userId);
+                "DELETE FROM positions WHERE account_id = ? AND symbol = ?;");
+            sqlite3_bind_int (stmt, 1, m_accountId);
             sqlite3_bind_text(stmt, 2, symbol.c_str(), -1, SQLITE_STATIC);
         }
         stepDml(stmt);
 
-        // Trade record
         stmt = prepare(m_db,
             "INSERT INTO trade_history "
-            "(user_id, symbol, side, quantity, price, timestamp, execution_price) "
+            "(account_id, symbol, side, quantity, price, timestamp, execution_price) "
             "VALUES (?, ?, ?, ?, ?, ?, ?);");
-        sqlite3_bind_int   (stmt, 1, m_userId);
+        sqlite3_bind_int   (stmt, 1, m_accountId);
         sqlite3_bind_text  (stmt, 2, trade.ticket.symbol.c_str(), -1, SQLITE_STATIC);
         sqlite3_bind_int   (stmt, 3, trade.ticket.side == OrderSide::Buy ? 0 : 1);
         sqlite3_bind_double(stmt, 4, trade.ticket.quantity);
@@ -141,6 +138,14 @@ void SqliteAccountStore::persist(double cash,
         exec(m_db, "ROLLBACK;");
         throw;
     }
+}
+
+void SqliteAccountStore::persistCash(double newCash) {
+    auto* stmt = prepare(m_db,
+        "INSERT OR REPLACE INTO account_state (account_id, cash) VALUES (?, ?);");
+    sqlite3_bind_int   (stmt, 1, m_accountId);
+    sqlite3_bind_double(stmt, 2, newCash);
+    stepDml(stmt);
 }
 
 } // namespace trading

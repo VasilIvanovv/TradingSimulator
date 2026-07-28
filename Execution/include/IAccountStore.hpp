@@ -23,6 +23,9 @@ public:
                          const std::string& symbol,
                          double newPosition,
                          const TradeRecord& trade) = 0;
+
+    // Persist a cash-only change (deposit/withdrawal) with no associated trade.
+    virtual void persistCash(double newCash) = 0;
 };
 
 } // namespace trading

@@ -70,6 +70,9 @@ public:
      */
     void removeRules(const std::string& symbol);
 
+    /** Return a snapshot of all currently pending limit rules. */
+    std::vector<UserLimitTracker::RuleEntry> getAllRules() const;
+
     /** Set the interval between polling ticks. Takes effect on the next sleep. */
     void setInterval(std::chrono::seconds interval);
 

@@ -1,11 +1,24 @@
 #pragma once
 
 #include "ApiTypes.hpp"
+#include <expected>
+#include <string>
 
 namespace trading {
 
 class IUserStore;
 class JwtService;
+
+/// Argon2id cost parameters. Use productionHashParams() for normal use,
+/// or construct with lower values in tests to keep hashing fast.
+struct HashingParams {
+    unsigned long long opsLimit;
+    size_t             memLimit;
+};
+
+/// Returns interactive-strength Argon2id parameters (defined in .cpp using
+/// libsodium constants so this header stays free of sodium.h).
+HashingParams productionHashParams();
 
 /**
  * @brief Handles user registration and login.
@@ -17,24 +30,22 @@ class JwtService;
  */
 class AuthHandler {
 public:
-    AuthHandler(IUserStore& store, JwtService& jwt);
+    AuthHandler(IUserStore& store, JwtService& jwt,
+                HashingParams params = productionHashParams());
 
-    /**
-     * @brief Create a new account and return a login token.
-     * @throws std::invalid_argument if username/password is empty or username is taken.
-     * @throws std::runtime_error if password hashing fails (out of memory).
-     */
-    AuthResponse registerUser(const RegisterRequest& req);
+    /// Create a new account and return a login token.
+    /// Returns an error string for expected failures (empty fields, duplicate username).
+    /// Throws std::runtime_error only for system failures (Argon2id OOM).
+    std::expected<AuthResponse, std::string> registerUser(const RegisterRequest& req);
 
-    /**
-     * @brief Verify credentials and return a login token.
-     * @throws std::invalid_argument if credentials are invalid.
-     */
-    AuthResponse loginUser(const LoginRequest& req);
+    /// Verify credentials and return a login token.
+    /// Returns an error string for invalid credentials — never reveals which field was wrong.
+    std::expected<AuthResponse, std::string> loginUser(const LoginRequest& req);
 
 private:
-    IUserStore& m_store;
-    JwtService& m_jwt;
+    IUserStore&   m_store;
+    JwtService&   m_jwt;
+    HashingParams m_params;
 };
 
 } // namespace trading

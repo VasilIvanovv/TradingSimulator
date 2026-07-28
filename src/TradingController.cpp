@@ -44,6 +44,10 @@ void TradingController::removeRules(const std::string &symbol) {
     m_watcher.removeRules(symbol);
 }
 
+std::vector<UserLimitTracker::RuleEntry> TradingController::getAllLimitRules() const {
+    return m_watcher.getAllRules();
+}
+
 double TradingController::getAvailableCash() const {
     return m_account->getAvailableCash();
 }
@@ -59,6 +63,10 @@ const std::vector<TradeRecord> &TradingController::getTradeHistory() const {
 
 ExecutionReceipt TradingController::placeOrder(const OrderTicket &ticket) {
     return m_account->executeOrder(ticket);
+}
+
+void TradingController::deposit(double amount) {
+    m_account->deposit(amount);
 }
 
 std::optional<std::vector<PriceCandle>> TradingController::getHistory(

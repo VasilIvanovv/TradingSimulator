@@ -13,6 +13,7 @@ public:
                           std::unique_ptr<IAccountStore> store = nullptr);
 
     ExecutionReceipt executeOrder(const OrderTicket& ticket) override;
+    void deposit(double amount) override;
     double getAvailableCash() const override;
     double getPosition(const std::string& symbol) const override;
     std::unordered_map<std::string, double> getAllPositions() const override;

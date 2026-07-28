@@ -44,6 +44,11 @@ void MarketWatcher::removeRules(const std::string &symbol) {
         stopLoop();
 }
 
+std::vector<UserLimitTracker::RuleEntry> MarketWatcher::getAllRules() const {
+    std::lock_guard lock(m_mutex);
+    return m_limitTracker.getAllRules();
+}
+
 void MarketWatcher::setInterval(std::chrono::seconds interval) {
     std::lock_guard lock(m_mutex);
     m_interval = interval;
@@ -74,7 +79,7 @@ void MarketWatcher::tick() {
     {
         std::lock_guard lock(m_mutex);
         if (isEmpty())
-            m_running = false;
+            m_running.store(false, std::memory_order_release);
     }
 }
 
@@ -86,12 +91,12 @@ void MarketWatcher::startLoop() {
     // Join a previously auto-stopped thread before spawning a new one.
     if (m_thread.joinable())
         m_thread.join();
-    m_running = true;
+    m_running.store(true, std::memory_order_release);
     m_thread = std::thread(&MarketWatcher::runLoop, this);
 }
 
 void MarketWatcher::stopLoop() {
-    m_running = false;
+    m_running.store(false, std::memory_order_release);
     m_cv.notify_all();
     if (m_thread.joinable())
         m_thread.join();
@@ -99,13 +104,13 @@ void MarketWatcher::stopLoop() {
 
 // Sleep first so tests can call tick() directly without racing the loop thread.
 void MarketWatcher::runLoop() {
-    while (m_running) {
+    while (m_running.load(std::memory_order_acquire)) {
         {
             std::unique_lock lock(m_mutex);
             m_cv.wait_for(lock, m_interval,
-                          [this] { return !m_running.load(); });
+                          [this] { return !m_running.load(std::memory_order_acquire); });
         }
-        if (m_running)
+        if (m_running.load(std::memory_order_acquire))
             tick();
     }
 }

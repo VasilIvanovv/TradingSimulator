@@ -44,6 +44,11 @@ ExecutionReceipt PaperAccount::executeOrder(const OrderTicket& ticket) {
     return receipt;
 }
 
+void PaperAccount::deposit(double amount) {
+    m_cash += amount;
+    if (m_store) m_store->persistCash(m_cash);
+}
+
 double PaperAccount::getAvailableCash() const { return m_cash; }
 
 double PaperAccount::getPosition(const std::string& symbol) const {

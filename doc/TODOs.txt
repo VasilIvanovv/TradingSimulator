@@ -1,3 +1,36 @@
 Add logging as a lib and then in a seperate repo and then add it as a submodule
 
-Review the market watcher and user limit tracker classes
+Support usernames and password and email recoveries
+
+Here's why the order matters:
+
+Multi-user support touches every layer simultaneously:
+
+Database — needs a users table, and every trade, position, and rule needs a user_id foreign key. 
+Adding this after the schema exists means a migration. Adding it now means one extra column from the start.
+
+Backend — TradingController currently serves one user. 
+With multiple users you need one controller instance per user, which changes how ApiHandler works fundamentally — 
+every method needs to know which user is making the request.
+
+HTTP API — every endpoint needs an auth token parsed from the request header. That's middleware added to HttpTransport.
+
+Frontend — every fetch() call needs a Bearer token in the Authorization header. 
+If you build 20 components without it and add auth later, you touch all 20.
+If you build the frontend first without auth, you'll refactor everything twice.
+
+What you don't need to do right now is implement production-grade auth — no OAuth, no refresh tokens, no email verification. A basic version is enough to unblock the frontend:
+
+POST /auth/register — username + password → creates user
+POST /auth/login — username + password → returns a JWT token
+Every other endpoint validates the token and extracts the user ID
+That's enough to build the frontend correctly from the start. Everything else (password reset, OAuth, refresh tokens) can come later without forcing a refactor.
+
+Back up the database, the local caches and the persistent files to a free storage bucket
+like Cloudflare R2 or AWS S3 Free Tier.
+
+Think if you can back up the database immediately
+
+Back up the local cache and config files once on a given period (24 hours for example)
+
+Add Pies to have multiple stocks

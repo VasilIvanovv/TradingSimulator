@@ -3,13 +3,13 @@
 #include "IAccountStore.hpp"
 #include <filesystem>
 
-struct sqlite3; // opaque SQLite handle — full definition only needed in .cpp
+struct sqlite3;
 
 namespace trading {
 
 class SqliteAccountStore : public IAccountStore {
 public:
-    SqliteAccountStore(const std::filesystem::path& dbPath, int userId);
+    SqliteAccountStore(const std::filesystem::path& dbPath, int accountId);
     ~SqliteAccountStore() override;
 
     bool load(double& outCash,
@@ -21,11 +21,13 @@ public:
                  double newPosition,
                  const TradeRecord& trade) override;
 
+    void persistCash(double newCash) override;
+
 private:
     void initSchema();
 
     sqlite3* m_db{};
-    int      m_userId{};
+    int      m_accountId{};
 };
 
 } // namespace trading

@@ -13,6 +13,14 @@ void UserLimitTracker::removeRules(const std::string &symbol) {
 
 bool UserLimitTracker::hasRules() const { return !m_rules.empty(); }
 
+std::vector<UserLimitTracker::RuleEntry> UserLimitTracker::getAllRules() const {
+    std::vector<RuleEntry> out;
+    for (const auto& [symbol, rules] : m_rules)
+        for (const auto& r : rules)
+            out.push_back({symbol, r.triggerPrice, r.side, r.quantity});
+    return out;
+}
+
 std::vector<OrderTicket>
 UserLimitTracker::evaluate(const PriceSource& priceSource) {
     std::vector<OrderTicket> tickets;

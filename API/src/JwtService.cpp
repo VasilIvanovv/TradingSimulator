@@ -1,6 +1,6 @@
 #include "JwtService.hpp"
 
-#include <jwt-cpp/jwt.h>
+#include <jwt-cpp/traits/nlohmann-json/defaults.h>
 
 namespace trading {
 

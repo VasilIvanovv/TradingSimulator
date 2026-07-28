@@ -16,9 +16,17 @@ namespace trading {
  */
 class UserLimitTracker {
 public:
+    struct RuleEntry {
+        std::string symbol;
+        double      triggerPrice;
+        OrderSide   side;
+        double      quantity;
+    };
+
     void addRule(const std::string& symbol, double triggerPrice, OrderSide side, double quantity);
     void removeRules(const std::string& symbol);
     bool hasRules() const;
+    std::vector<RuleEntry> getAllRules() const;
 
     /** Evaluate all rules, remove those that trigger, and return their tickets. */
     std::vector<OrderTicket> evaluate(const PriceSource& priceSource);

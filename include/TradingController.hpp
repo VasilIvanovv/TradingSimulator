@@ -42,6 +42,7 @@ class TradingController {
                       OrderSide side, double quantity);
     void addEngine(std::unique_ptr<IDecisionEngine> engine);
     void removeRules(const std::string &symbol);
+    std::vector<UserLimitTracker::RuleEntry> getAllLimitRules() const;
 
     // --- Account state ---
     double getAvailableCash() const;
@@ -50,6 +51,7 @@ class TradingController {
 
     // --- Manual execution ---
     ExecutionReceipt placeOrder(const OrderTicket &ticket);
+    void deposit(double amount);
 
     // --- Market data ---
     std::optional<std::vector<PriceCandle>> getHistory(const std::string& symbol,

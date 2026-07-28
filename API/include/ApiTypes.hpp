@@ -70,6 +70,55 @@ struct AuthResponse {
 };
 
 // ---------------------------------------------------------------------------
+// Rules
+// ---------------------------------------------------------------------------
+
+/** @brief One pending limit rule returned by @c GET /rules. */
+struct ActiveRule {
+    std::string symbol;
+    double      triggerPrice{};
+    OrderSide   side{};
+    double      quantity{};
+};
+
+// ---------------------------------------------------------------------------
+// Accounts
+// ---------------------------------------------------------------------------
+
+/** @brief One paper-trading account returned by @c GET /accounts. */
+struct AccountInfo {
+    int         id{};
+    std::string name;
+};
+
+/** @brief Body for @c POST /accounts/:id/deposit and @c POST /accounts/deposit-all. */
+struct DepositRequest {
+    double amount{};
+};
+
+/** @brief Body for @c POST /accounts and @c PUT /accounts/:id. */
+struct AccountNameRequest {
+    std::string name;
+};
+
+/** @brief Result of @c POST /accounts/deposit-all — per-account success/failure. */
+struct DepositAllResult {
+    std::vector<int> succeeded;
+    std::vector<int> failed;
+};
+
+// ---------------------------------------------------------------------------
+// Symbol catalogue
+// ---------------------------------------------------------------------------
+
+/** @brief One tradeable asset returned by @c GET /symbols. */
+struct SymbolInfo {
+    std::string symbol; ///< Ticker, e.g. "AAPL".
+    std::string name;   ///< Human-readable company name.
+    std::string sector; ///< Grouping label, e.g. "Technology".
+};
+
+// ---------------------------------------------------------------------------
 // Responses (server → client)
 // ---------------------------------------------------------------------------
 

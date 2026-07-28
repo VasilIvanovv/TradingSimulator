@@ -1,4 +1,3 @@
-find_package(CURL          REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(GTest         REQUIRED)
 find_package(httplib       CONFIG REQUIRED)
@@ -17,7 +16,7 @@ target_link_libraries(trading_market_data PUBLIC
     trading_core
     trading_domain
     nlohmann_json::nlohmann_json
-    CURL::libcurl
+    httplib::httplib
 )
 trading_apply_warnings(trading_market_data)
 

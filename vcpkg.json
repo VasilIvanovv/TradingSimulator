@@ -2,7 +2,6 @@
     "name": "trading-simulator",
     "version": "0.1.0",
     "dependencies": [
-        "curl",
         "nlohmann-json",
         "gtest",
         "sqlite3",
@@ -10,7 +9,7 @@
         "libsodium",
         {
             "name": "cpp-httplib",
-            "default-features": false
+            "features": ["openssl"]
         }
     ]
 }

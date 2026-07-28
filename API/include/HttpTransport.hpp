@@ -3,8 +3,11 @@
 #include "ApiHandler.hpp"
 #include "AuthHandler.hpp"
 #include "JwtService.hpp"
+#include "LogoManager.hpp"
+#include "SymbolManager.hpp"
 #include <httplib.h>
 #include <optional>
+#include <string>
 #include <thread>
 
 namespace trading {
@@ -31,10 +34,18 @@ namespace trading {
  * | POST   | /rules             | `{ symbol, triggerPrice, side, quantity }`      |
  * | DELETE | /rules/{symbol}    | —                                               |
  * | GET    | /history           | `?symbol=&interval=&start=`                     |
+ *
+ * ### Public endpoints (no token required)
+ * | Method | Path               | Notes                                           |
+ * |--------|--------------------|-------------------------------------------------|
+ * | GET    | /symbols           | Full tradeable symbol catalogue                 |
+ * | GET    | /logos/{symbol}    | PNG logo for the symbol (CDN-cached on disk)    |
  */
 class HttpTransport {
 public:
-    HttpTransport(ApiHandler& handler, AuthHandler& auth, JwtService& jwt, int port);
+    HttpTransport(ApiHandler& handler, AuthHandler& auth, JwtService& jwt,
+                  SymbolManager& symbols, LogoManager& logos,
+                  int port, std::string bindHost = "0.0.0.0");
     ~HttpTransport();
 
     /** @brief Start the server and block until stop() is called. */
@@ -53,12 +64,15 @@ private:
     /// Returns the user id on success, nullopt if missing or invalid.
     std::optional<int> extractUserId(const httplib::Request& req) const;
 
-    ApiHandler&     m_handler;
-    AuthHandler&    m_auth;
-    JwtService&     m_jwt;
-    httplib::Server m_server;
-    int             m_port;
-    std::thread     m_thread;
+    ApiHandler&     m_apiHandler;
+    AuthHandler&    m_authHandler;
+    JwtService&     m_jwtService;
+    SymbolManager&  m_symbolManager;
+    LogoManager&    m_logoManager;
+    httplib::Server m_httpServer;
+    int             m_listenPort;
+    std::string     m_bindHost;
+    std::thread     m_serverThread;
 };
 
 } // namespace trading
