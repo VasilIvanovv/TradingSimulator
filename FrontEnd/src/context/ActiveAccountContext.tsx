@@ -95,6 +95,10 @@ export function ActiveAccountProvider({ children }: { children: ReactNode }) {
     return accountApi.depositAll(amount)
   }
 
+  // Don't render children until the first account load resolves — otherwise
+  // any trading API call fires before accountId is set in client.ts and gets a 400.
+  if (isAuthenticated && loading) return null
+
   return (
     <ActiveAccountContext.Provider value={{
       accounts, activeAccount, loading,

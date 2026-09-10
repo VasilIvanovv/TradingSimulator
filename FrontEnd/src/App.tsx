@@ -6,6 +6,7 @@ import { Layout } from './components/Layout'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { DashboardPage } from './pages/DashboardPage'
+import { HistoryPage } from './pages/HistoryPage'
 import { RulesPage } from './pages/RulesPage'
 import { MarketsPage } from './pages/MarketsPage'
 import { StockPage } from './pages/StockPage'
@@ -25,7 +26,7 @@ export default function App() {
               <Route path="/markets"          element={<MarketsPage />} />
               <Route path="/stocks/:symbol"  element={<StockPage />} />
               <Route path="/rules"           element={<RulesPage />} />
-              <Route path="/history" element={<Placeholder title="History" />} />
+              <Route path="/history" element={<HistoryPage />} />
             </Route>
           </Route>
 

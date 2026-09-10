@@ -86,19 +86,21 @@ export function StockPage() {
   const [chartLoading, setChartLoading] = useState(true)
   const [chartError,   setChartError]   = useState<string | null>(null)
 
+  const [livePrice,    setLivePrice]    = useState<number | null>(null)
+
   const [side,        setSide]        = useState<Side>('buy')
   const [amount,      setAmount]      = useState('')
   const [submitting,  setSubmitting]  = useState(false)
   const [orderError,  setOrderError]  = useState<string | null>(null)
   const [orderResult, setOrderResult] = useState<string | null>(null)
 
-  const info        = symbols.find(s => s.symbol === symbol)
-  const position    = account?.positions[symbol] ?? 0
-  const lastCandle  = candles.at(-1)
-  const prevCandle  = candles.at(-2)
-  const marketPrice = lastCandle?.close ?? null
-  const change      = lastCandle && prevCandle
-    ? ((lastCandle.close - prevCandle.close) / prevCandle.close) * 100
+  const info         = symbols.find(s => s.symbol === symbol)
+  const position     = account?.positions[symbol] ?? 0
+  const lastDayClose = candles.at(-1)?.close ?? null
+  const prevDayClose = candles.at(-2)?.close ?? null
+  const marketPrice  = livePrice ?? lastDayClose
+  const change       = marketPrice != null && prevDayClose != null
+    ? ((marketPrice - prevDayClose) / prevDayClose) * 100
     : null
 
   const parsedAmount  = Math.round(parseFloat(amount) * 100) / 100  // cents
@@ -106,7 +108,7 @@ export function StockPage() {
     ? Math.round((parsedAmount / marketPrice) * 1e6) / 1e6          // 6dp for shares
     : null
 
-  // Fetch candles when symbol or range changes
+  // Fetch candles when symbol or range changes (chart — daily)
   useEffect(() => {
     if (!symbol) return
     const rangeConfig = RANGES.find(r => r.label === range)!
@@ -117,6 +119,17 @@ export function StockPage() {
       .catch(err  => setChartError(err instanceof ApiError ? err.message : 'Failed to load price data'))
       .finally(() => setChartLoading(false))
   }, [symbol, range])
+
+  // Fetch most-recent hourly candle for live price
+  useEffect(() => {
+    if (!symbol) return
+    tradingApi.getHistory(symbol, '1h', daysAgo(5))
+      .then(data => {
+        const last = data.candles.at(-1)
+        if (last) setLivePrice(last.close)
+      })
+      .catch(() => { /* fall back to daily close */ })
+  }, [symbol])
 
   async function handleOrder(e: FormEvent) {
     e.preventDefault()
@@ -168,10 +181,10 @@ export function StockPage() {
             )}
           </div>
         </div>
-        {lastCandle && (
+        {marketPrice != null && (
           <div className="text-right shrink-0">
             <div className="text-[22px] font-mono font-bold text-txt tabular-nums">
-              ${lastCandle.close.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              ${marketPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             {change !== null && (
               <div className={`text-[11px] font-mono ${change >= 0 ? 'text-pos' : 'text-neg'}`}>
@@ -230,9 +243,9 @@ export function StockPage() {
             <>
               <div className="text-[24px] font-mono font-bold text-txt tabular-nums">{position}</div>
               <div className="text-[11px] text-txt-3 mt-[2px]">shares held</div>
-              {lastCandle && (
+              {marketPrice != null && (
                 <div className="mt-[10px] text-[12px] font-mono text-txt-2">
-                  ≈ ${(position * lastCandle.close).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  ≈ ${(position * marketPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
               )}
             </>

@@ -1,8 +1,12 @@
 #pragma once
 
+#include <chrono>
+#include <ctime>
 #include <memory>
 #include <optional>
+#include <string>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 #include "IDataProvider.hpp"
 #include "ILocalCache.hpp"
@@ -26,9 +30,10 @@ public:
      * @param cache      Optional local cache. Pass @c nullptr to disable
      *                   caching entirely.
      */
-    DataBroker(
+    explicit DataBroker(
         std::vector<std::unique_ptr<IDataProvider>> providers,
-        std::unique_ptr<ILocalCache> cache
+        std::unique_ptr<ILocalCache> cache,
+        std::chrono::seconds scanPeriod = std::chrono::hours(24)
     );
 
     ~DataBroker()                            = default;
@@ -60,6 +65,8 @@ public:
 private:
     std::vector<std::unique_ptr<IDataProvider>> m_providers;
     std::unique_ptr<ILocalCache>                m_cache;
+    std::chrono::seconds                        m_scanPeriod;
+    std::unordered_map<std::string, std::time_t> m_lastScanTime;
 
     void persistToCache(
         std::string_view symbol,

@@ -8,6 +8,7 @@
 #include "JwtService.hpp"
 #include "LogoManager.hpp"
 #include "PaperAccount.hpp"
+#include "SqliteAccountManager.hpp"
 #include "SqliteAccountStore.hpp"
 #include "SqliteUserStore.hpp"
 #include "SymbolManager.hpp"
@@ -31,19 +32,22 @@ static constexpr const char* kBindHost = "127.0.0.1";
 class HttpTransportTest : public ::testing::Test {
 protected:
     static void SetUpTestSuite() {
-        s_userStore  = std::make_unique<SqliteUserStore>(":memory:");
-        s_jwtService = std::make_unique<JwtService>("integration-test-secret");
+        s_userStore      = std::make_unique<SqliteUserStore>(":memory:");
+        s_jwtService     = std::make_unique<JwtService>("integration-test-secret");
+        s_accountManager = std::make_unique<SqliteAccountManager>(":memory:");
 
-        s_handler = std::make_unique<ApiHandler>([](int userId) {
-            return std::make_unique<TradingController>(
-                std::make_unique<PaperAccount>(
-                    10'000.0,
-                    std::make_unique<SqliteAccountStore>(":memory:", userId)),
-                std::make_unique<DataBroker>(
-                    std::vector<std::unique_ptr<IDataProvider>>{},
-                    nullptr),
-                "1day", "2025-01-01");
-        });
+        s_handler = std::make_unique<ApiHandler>(
+            [](int accountId) {
+                return std::make_unique<TradingController>(
+                    std::make_unique<PaperAccount>(
+                        10'000.0,
+                        std::make_unique<SqliteAccountStore>(":memory:", accountId)),
+                    std::make_unique<DataBroker>(
+                        std::vector<std::unique_ptr<IDataProvider>>{},
+                        nullptr),
+                    "1day", "2025-01-01");
+            },
+            *s_accountManager);
 
         s_auth = std::make_unique<AuthHandler>(*s_userStore, *s_jwtService,
                                                HashingParams{crypto_pwhash_OPSLIMIT_MIN,
@@ -82,6 +86,7 @@ protected:
         s_symbolManager.reset();
         s_auth.reset();
         s_handler.reset();
+        s_accountManager.reset();
         s_jwtService.reset();
         s_userStore.reset();
     }
@@ -104,22 +109,34 @@ protected:
         return json::parse(res->body).at("token").get<std::string>();
     }
 
-    static std::unique_ptr<SqliteUserStore> s_userStore;
-    static std::unique_ptr<JwtService>      s_jwtService;
-    static std::unique_ptr<ApiHandler>      s_handler;
-    static std::unique_ptr<AuthHandler>     s_auth;
-    static std::unique_ptr<SymbolManager>   s_symbolManager;
-    static std::unique_ptr<LogoManager>       s_logoCache;
-    static std::unique_ptr<HttpTransport>   s_transport;
+    // Call GET /accounts (which auto-creates the Default account) and return
+    // the first account's id — needed as ?accountId= on trading endpoints.
+    static int getDefaultAccountId(const std::string& token) {
+        auto client = makeClient();
+        httplib::Headers headers{{"Authorization", "Bearer " + token}};
+        const auto res = client.Get("/accounts", headers);
+        if (!res) throw std::runtime_error("getDefaultAccountId: server unreachable");
+        return json::parse(res->body).at(0).at("id").get<int>();
+    }
+
+    static std::unique_ptr<SqliteUserStore>      s_userStore;
+    static std::unique_ptr<JwtService>           s_jwtService;
+    static std::unique_ptr<SqliteAccountManager> s_accountManager;
+    static std::unique_ptr<ApiHandler>           s_handler;
+    static std::unique_ptr<AuthHandler>          s_auth;
+    static std::unique_ptr<SymbolManager>        s_symbolManager;
+    static std::unique_ptr<LogoManager>          s_logoCache;
+    static std::unique_ptr<HttpTransport>        s_transport;
 };
 
-std::unique_ptr<SqliteUserStore> HttpTransportTest::s_userStore;
-std::unique_ptr<JwtService>      HttpTransportTest::s_jwtService;
-std::unique_ptr<ApiHandler>      HttpTransportTest::s_handler;
-std::unique_ptr<AuthHandler>     HttpTransportTest::s_auth;
-std::unique_ptr<SymbolManager>   HttpTransportTest::s_symbolManager;
-std::unique_ptr<LogoManager>       HttpTransportTest::s_logoCache;
-std::unique_ptr<HttpTransport>   HttpTransportTest::s_transport;
+std::unique_ptr<SqliteUserStore>      HttpTransportTest::s_userStore;
+std::unique_ptr<JwtService>           HttpTransportTest::s_jwtService;
+std::unique_ptr<SqliteAccountManager> HttpTransportTest::s_accountManager;
+std::unique_ptr<ApiHandler>           HttpTransportTest::s_handler;
+std::unique_ptr<AuthHandler>          HttpTransportTest::s_auth;
+std::unique_ptr<SymbolManager>        HttpTransportTest::s_symbolManager;
+std::unique_ptr<LogoManager>          HttpTransportTest::s_logoCache;
+std::unique_ptr<HttpTransport>        HttpTransportTest::s_transport;
 
 // ---------------------------------------------------------------------------
 // Auth endpoint tests
@@ -199,10 +216,11 @@ TEST_F(HttpTransportTest, GetAccount_InvalidToken_Returns401) {
 }
 
 TEST_F(HttpTransportTest, GetAccount_ValidToken_Returns200) {
-    const auto token = registerAndGetToken("user_acct");
+    const auto token     = registerAndGetToken("user_acct");
+    const auto accountId = getDefaultAccountId(token);
     auto client = makeClient();
     httplib::Headers headers{{"Authorization", "Bearer " + token}};
-    const auto res = client.Get("/account", headers);
+    const auto res = client.Get("/account?accountId=" + std::to_string(accountId), headers);
     ASSERT_TRUE(res);
     EXPECT_EQ(res->status, 200);
     const auto body = json::parse(res->body);
@@ -210,34 +228,35 @@ TEST_F(HttpTransportTest, GetAccount_ValidToken_Returns200) {
 }
 
 TEST_F(HttpTransportTest, PlaceOrder_ValidToken_Returns200) {
-    const auto token = registerAndGetToken("user_order");
+    const auto token     = registerAndGetToken("user_order");
+    const auto accountId = getDefaultAccountId(token);
     auto client = makeClient();
     httplib::Headers headers{{"Authorization", "Bearer " + token}};
-    const auto res = client.Post("/orders", headers,
-                                  json{{"symbol",   "AAPL"},
-                                       {"side",     "buy"},
-                                       {"quantity", 10},
-                                       {"price",    100.0}}.dump(),
-                                  "application/json");
+    const auto res = client.Post(
+        "/orders?accountId=" + std::to_string(accountId), headers,
+        json{{"symbol","AAPL"},{"side","buy"},{"quantity",10},{"price",100.0}}.dump(),
+        "application/json");
     ASSERT_TRUE(res);
     EXPECT_EQ(res->status, 200);
     EXPECT_EQ(json::parse(res->body).at("status").get<std::string>(), "filled");
 }
 
 TEST_F(HttpTransportTest, TwoUsers_HaveSeparateAccounts) {
-    const auto token1 = registerAndGetToken("user_sep1");
-    const auto token2 = registerAndGetToken("user_sep2");
+    const auto token1    = registerAndGetToken("user_sep1");
+    const auto token2    = registerAndGetToken("user_sep2");
+    const auto accountId1 = getDefaultAccountId(token1);
+    const auto accountId2 = getDefaultAccountId(token2);
     auto client = makeClient();
 
-    // user1 buys AAPL
+    // user1 buys AAPL on their default account
     httplib::Headers h1{{"Authorization", "Bearer " + token1}};
-    client.Post("/orders", h1,
+    client.Post("/orders?accountId=" + std::to_string(accountId1), h1,
                 json{{"symbol","AAPL"},{"side","buy"},{"quantity",5},{"price",100.0}}.dump(),
                 "application/json");
 
     // user2's account should be untouched
     httplib::Headers h2{{"Authorization", "Bearer " + token2}};
-    const auto res = client.Get("/account", h2);
+    const auto res = client.Get("/account?accountId=" + std::to_string(accountId2), h2);
     ASSERT_TRUE(res);
     const auto body = json::parse(res->body);
     EXPECT_DOUBLE_EQ(body.at("cash").get<double>(), 10000.0);

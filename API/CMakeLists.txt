@@ -12,6 +12,7 @@ add_library(trading_api STATIC
     src/HttpTransport.cpp
     src/JwtService.cpp
     src/LogoManager.cpp
+    src/SqliteAccountManager.cpp
     src/SqliteUserStore.cpp
     src/SymbolManager.cpp
 )

@@ -84,7 +84,10 @@ export const tradingApi = {
     api.get<AccountSnapshot>(withAccount('/account')),
 
   placeOrder: (symbol: string, side: 'buy' | 'sell', quantity: number, price: number) =>
-    api.post<ExecutionReceipt>(withAccount('/orders'), { symbol, side, quantity, price }),
+    api.post<ExecutionReceipt>(withAccount('/orders'), {
+      symbol, side, quantity, price,
+      timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
+    }),
 
   getRules: () =>
     api.get<ActiveRule[]>(withAccount('/rules')),

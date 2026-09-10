@@ -83,41 +83,45 @@ protected:
 // Cache hit
 // ---------------------------------------------------------------------------
 
-TEST_F(DataBrokerTest, CacheHit_ReturnsCachedData_ProvidersNotCalled) {
+TEST_F(DataBrokerTest, CacheHit_HeadGap_FetchesFromStartDate_ReturnsMerged) {
+    // Cache has data but its earliest candle is AFTER startDate (head gap).
+    // DataBroker must fetch from startDate to fill the missing prefix.
+    // Here providers return nothing new, so only the cached candle is returned.
     EXPECT_CALL(*m_cachePtr, tryLoad(_, _, _, _))
         .WillOnce([](auto, auto, auto, std::vector<PriceCandle>& out) {
-            out.push_back(makeCandle("2024-01-15"));
+            out.push_back(makeCandle("2099-01-01"));  // far-future: never stale, but > kStart
             return true;
         });
-    EXPECT_CALL(*m_p1, tryGetHistory(_, _, _, _)).Times(0);
-    EXPECT_CALL(*m_p2, tryGetHistory(_, _, _, _)).Times(0);
+    EXPECT_CALL(*m_p1, tryGetHistory(_, _, std::string_view{kStart}, _)).WillOnce(Return(false));
+    EXPECT_CALL(*m_p2, tryGetHistory(_, _, std::string_view{kStart}, _)).WillOnce(Return(false));
     EXPECT_CALL(*m_cachePtr, trySave(_, _, _)).Times(0);
 
     auto result = m_broker->getHistory("AAPL", "1day", kStart);
 
     ASSERT_TRUE(result.has_value());
     ASSERT_EQ(result->size(), 1u);
-    EXPECT_EQ(result->front().timestamp, "2024-01-15");
+    EXPECT_EQ(result->front().timestamp, "2099-01-01");
 }
 
-TEST_F(DataBrokerTest, CacheHit_ReturnsOnlyDataFromStartDate_NoFurtherFiltering) {
-    // The cache is responsible for filtering; DataBroker uses whatever it returns as-is.
+TEST_F(DataBrokerTest, CacheHit_NoHeadGap_FreshTail_ProvidersCalledFromCacheBack) {
+    // Cache covers the full requested range (front == startDate) with a fresh tail.
+    // Providers are called incrementally from the last cached timestamp.
     EXPECT_CALL(*m_cachePtr, tryLoad(_, _, _, _))
         .WillOnce([](auto, auto, auto, std::vector<PriceCandle>& out) {
-            out.push_back(makeCandle("2024-01-01"));
-            out.push_back(makeCandle("2024-01-02"));
+            out.push_back(makeCandle("2099-01-01"));  // front == startDate: no head gap
+            out.push_back(makeCandle("2099-01-02"));  // far-future: never stale
             return true;
         });
-    EXPECT_CALL(*m_p1, tryGetHistory(_, _, _, _)).Times(0);
-    EXPECT_CALL(*m_p2, tryGetHistory(_, _, _, _)).Times(0);
+    EXPECT_CALL(*m_p1, tryGetHistory(_, _, "2099-01-02", _)).WillOnce(Return(false));
+    EXPECT_CALL(*m_p2, tryGetHistory(_, _, "2099-01-02", _)).WillOnce(Return(false));
     EXPECT_CALL(*m_cachePtr, trySave(_, _, _)).Times(0);
 
-    auto result = m_broker->getHistory("AAPL", "1day", kStart);
+    auto result = m_broker->getHistory("AAPL", "1day", "2099-01-01");
 
     ASSERT_TRUE(result.has_value());
     ASSERT_EQ(result->size(), 2u);
-    EXPECT_EQ((*result)[0].timestamp, "2024-01-01");
-    EXPECT_EQ((*result)[1].timestamp, "2024-01-02");
+    EXPECT_EQ((*result)[0].timestamp, "2099-01-01");
+    EXPECT_EQ((*result)[1].timestamp, "2099-01-02");
 }
 
 TEST_F(DataBrokerTest, CacheMiss_FallsThroughToProviders) {
